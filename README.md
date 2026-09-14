@@ -29,6 +29,8 @@ LearningPlaywrightFundamentals/
 ├── scripts/
 │   └── readme-sync.js
 ├── tests/
+│   ├── 228_Example.spec.ts
+│   ├── 229_MultipleContext.spec.ts
 │   ├── example.spec.ts
 │   └── tta-check.spec.ts
 ├── .gitignore
@@ -41,6 +43,19 @@ LearningPlaywrightFundamentals/
 `playwright-report/` and `test-results/` are generated at run time and are gitignored.
 
 ## Test Suites
+
+### `tests/228_Example.spec.ts`
+
+Target: https://playwright.dev/
+
+2 test case(s):
+
+- **viewer**
+- **admin**
+
+### `tests/229_MultipleContext.spec.ts`
+
+_No top-level `test(...)` blocks found in this file._
 
 ### `tests/example.spec.ts`
 
