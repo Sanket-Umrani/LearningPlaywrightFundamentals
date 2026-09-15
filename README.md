@@ -29,10 +29,12 @@ LearningPlaywrightFundamentals/
 ├── scripts/
 │   └── readme-sync.js
 ├── tests/
-│   ├── 228_Example.spec.ts
-│   ├── 229_MultipleContext.spec.ts
-│   ├── example.spec.ts
-│   └── tta-check.spec.ts
+│   ├── 01_Basics/
+│   ├── 02_TestAnnotations/
+│   ├── 03_Locator_Commands/
+│   ├── 22_Misc_AI_concepts/
+│   ├── 23_Advance_Playwright_Framework/
+│   └── example.spec.ts
 ├── .gitignore
 ├── auto-push-agent.js
 ├── package-lock.json
@@ -44,7 +46,7 @@ LearningPlaywrightFundamentals/
 
 ## Test Suites
 
-### `tests/228_Example.spec.ts`
+### `tests/01_Basics/228_PageFixture.spec.ts`
 
 Target: https://playwright.dev/
 
@@ -53,9 +55,82 @@ Target: https://playwright.dev/
 - **viewer**
 - **admin**
 
-### `tests/229_MultipleContext.spec.ts`
+### `tests/01_Basics/229_MultipleContext.spec.ts`
 
 _No top-level `test(...)` blocks found in this file._
+
+### `tests/01_Basics/230_normal_pw.spec.ts`
+
+Target: https://example.com
+
+_No top-level `test(...)` blocks found in this file._
+
+### `tests/01_Basics/231_CodeGen_tta-check.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+1 test case(s):
+
+- **test**
+
+> **Warning:** line 7 hard-codes the literal `shreyas` in a `fill()` call. Move credentials to environment variables before this repository is shared.
+
+> **Warning:** line 9 hard-codes the literal `1234567` in a `fill()` call. Move credentials to environment variables before this repository is shared.
+
+### `tests/01_Basics/232_BCP.spec.ts`
+
+_No top-level `test(...)` blocks found in this file._
+
+### `tests/01_Basics/233_TA.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/
+
+2 test case(s):
+
+- **Navigating to the tta website**
+- **BCP - in app.vwo.com two roles**
+
+### `tests/01_Basics/234_TestOptions.spec.ts`
+
+Target: https://app.vwo.com/#login
+
+2 test case(s):
+
+- **context with options**
+- **mobile context**
+
+### `tests/02_TestAnnotations/235_TestAnnotations.spec.ts`
+
+Target: https://sdet.live
+
+6 test case(s):
+
+- **checkout with PayPal**
+- **login as Pramod**
+- **cart total is wrong, BUG-451**
+- **upload 2GB file**
+- **full regression report**
+- **mobile layout**
+
+### `tests/02_TestAnnotations/236_TestDescribe.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/
+
+5 test case(s):
+
+- **Login Page**
+- **valid credentials**
+- **invalid password**
+- **1checkout with PayPal**
+- **checkout with PayPal**
+
+### `tests/03_Locator_Commands/237_LC.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+1 test case(s):
+
+- **Verify X**
 
 ### `tests/example.spec.ts`
 
@@ -65,18 +140,6 @@ Target: https://playwright.dev/
 
 - **has title**
 - **get started link**
-
-### `tests/tta-check.spec.ts`
-
-Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
-
-1 test case(s):
-
-- **test**
-
-> **Warning:** line 6 hard-codes the literal `shreyas` in a `fill()` call. Move credentials to environment variables before this repository is shared.
-
-> **Warning:** line 8 hard-codes the literal `1234567` in a `fill()` call. Move credentials to environment variables before this repository is shared.
 
 ## Configuration
 

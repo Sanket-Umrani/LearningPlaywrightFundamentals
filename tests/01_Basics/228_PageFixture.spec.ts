@@ -1,3 +1,4 @@
+//Old style of writing BCP is present in 230_normal_pw_spec.ts file and below is the new style of writing BCP 
 import { test, expect } from '@playwright/test';
 
 test('viewer', async ({ page }) => {

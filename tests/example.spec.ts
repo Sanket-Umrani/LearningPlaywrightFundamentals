@@ -1,3 +1,5 @@
+//This is a sample file created upon creation of tests folder
+
 import { test, expect } from '@playwright/test';
 
 test('has title', async ({ page }) => {
