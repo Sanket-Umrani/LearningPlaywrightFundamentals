@@ -34,7 +34,8 @@ LearningPlaywrightFundamentals/
 │   ├── 03_Locator_Commands/
 │   ├── 22_Misc_AI_concepts/
 │   ├── 23_Advance_Playwright_Framework/
-│   └── example.spec.ts
+│   ├── example.spec.ts
+│   └── PracticePrograms/
 ├── .gitignore
 ├── auto-push-agent.js
 ├── package-lock.json
@@ -126,11 +127,45 @@ Target: https://app.thetestingacademy.com/playwright/
 
 ### `tests/03_Locator_Commands/237_LC.spec.ts`
 
-Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+Targets:
+- https://app.thetestingacademy.com/playwright/multiple_element_filter
+- https://app.thetestingacademy.com/login
 
 1 test case(s):
 
 - **Verify X**
+
+### `tests/03_Locator_Commands/238_ReferrerAddToContext.spec.ts`
+
+Targets:
+- https://app.vwo.com/#login
+- https://katalon-demo-cura.herokuapp.com/profile.php#login
+
+1 test case(s):
+
+- **set referer for entire context**
+
+### `tests/03_Locator_Commands/239_Fresh.spec.ts`
+
+Target: https://app.vwo.com
+
+1 test case(s):
+
+- **tc#1 - Verify that the vwo page is laoded**
+
+> **Warning:** line 37 hard-codes the literal `admin@admin.com` in a `fill()` call. Move credentials to environment variables before this repository is shared.
+
+> **Warning:** line 38 hard-codes the literal `pass123` in a `fill()` call. Move credentials to environment variables before this repository is shared.
+
+### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
+
+Target: https://katalon-demo-cura.herokuapp.com/
+
+1 test case(s):
+
+- **Navigate to CURA Health Services and CLick on Make Appointment**
+
+> **Warning:** line 19 hard-codes the literal `ThisIsNotAPassword` in a `fill()` call. Move credentials to environment variables before this repository is shared.
 
 ### `tests/example.spec.ts`
 
