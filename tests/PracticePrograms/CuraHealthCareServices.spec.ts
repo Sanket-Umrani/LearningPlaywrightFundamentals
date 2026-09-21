@@ -22,7 +22,7 @@ test('Navigate to CURA Health Services and CLick on Make Appointment', async ({ 
     let expMessage = page.locator('#btn-make-appointment');
     await expect(expMessage).toContainText('Make Appointment');
 
-    await page.pause();
+    //await page.pause();
 
 
 
