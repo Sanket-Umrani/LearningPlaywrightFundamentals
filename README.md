@@ -157,6 +157,34 @@ Target: https://app.vwo.com
 
 > **Warning:** line 38 hard-codes the literal `pass123` in a `fill()` call. Move credentials to environment variables before this repository is shared.
 
+### `tests/03_Locator_Commands/240_Project3.spec.ts`
+
+Target: https://wingify.com/free-trial/
+
+1 test case(s):
+
+- **Verfiy the error message in the wingify free trial**
+
+### `tests/03_Locator_Commands/241_getByRole.spec.ts`
+
+Target: https://app.wingify.com/#/login
+
+1 test case(s):
+
+- **Verfiy the error message in the wingify free trial**
+
+> **Warning:** line 7 hard-codes the literal `admin@vwo.com` in a `fill()` call. Move credentials to environment variables before this repository is shared.
+
+> **Warning:** line 8 hard-codes the literal `1234` in a `fill()` call. Move credentials to environment variables before this repository is shared.
+
+### `tests/03_Locator_Commands/242_getByRole.spec.ts`
+
+Target: https://katalon-demo-cura.herokuapp.com/
+
+1 test case(s):
+
+- **Verfiy the error message in the wingify free trial**
+
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
 Target: https://katalon-demo-cura.herokuapp.com/
