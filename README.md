@@ -26,21 +26,43 @@ The second command downloads the Chromium binary required by the configured proj
 
 ```
 LearningPlaywrightFundamentals/
+├── allure-results/
+│   ├── 17a1bb8b-2a24-463a-8734-f1e0eeabbdd1-result.json
+│   ├── 1d21e7dd-6ba9-4595-b40e-b33334d1ffb8-result.json
+│   ├── 53aa276a-cbac-449c-9fb0-14f7f622da36-attachment.txt
+│   ├── 585a3bbe-5427-4ade-9324-1ea25513fbf9-result.json
+│   ├── 6bf7e483-5006-402e-816d-7d2b0f306ed0-attachment.txt
+│   ├── 6e60ca35-8b33-42d6-90e5-81b9bd3ab42b-attachment.txt
+│   ├── 7d07cabf-d788-4daf-a89c-b94fb4d5f65d-attachment.txt
+│   ├── b3faadbf-036b-49e0-a726-c817f078f92d-result.json
+│   ├── cbe8d8c7-1035-49b3-adf6-322603224724-attachment.txt
+│   ├── d26df4a6-5f68-4673-90e8-8132e171430b-result.json
+│   ├── e9984ffb-6fb4-461e-99dc-b9ea17ee1cb3-result.json
+│   └── effa0771-aba7-4422-9c56-b3ed35177319-attachment.txt
+├── Concept_Understanding/
+│   ├── Codegen.md
+│   └── Session_State.md
 ├── scripts/
+│   ├── concept-analysis.js
 │   └── readme-sync.js
 ├── tests/
 │   ├── 01_Basics/
 │   ├── 02_TestAnnotations/
 │   ├── 03_Locator_Commands/
+│   ├── 04_SessionStorage/
 │   ├── 22_Misc_AI_concepts/
 │   ├── 23_Advance_Playwright_Framework/
+│   ├── Concept_Understanding/
 │   ├── example.spec.ts
 │   └── PracticePrograms/
+├── .env
+├── .env-example
 ├── .gitignore
 ├── auto-push-agent.js
 ├── package-lock.json
 ├── package.json
-└── playwright.config.ts
+├── playwright.config.ts
+└── user-session.json
 ```
 
 `playwright-report/` and `test-results/` are generated at run time and are gitignored.
@@ -185,6 +207,19 @@ Target: https://katalon-demo-cura.herokuapp.com/
 
 - **Verfiy the error message in the wingify free trial**
 
+### `tests/04_SessionStorage/244_Test_Wingify.spec.ts`
+
+Targets:
+- https://app.wingify.com/#/dashboard?accountId=1281646
+- https://app.wingify.com/#/web-experimentation?accountId=1281646
+- https://app.wingify.com/#/deploy/experience/?accountId=1281646
+
+3 test case(s):
+
+- **go directly to dashboard — Test1**
+- **go directly to Web Experimentation — Test2**
+- **go directly to Web Rollout — Test3**
+
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
 Target: https://katalon-demo-cura.herokuapp.com/
@@ -214,7 +249,7 @@ From `playwright.config.ts`:
 | `fullyParallel` | `true` |
 | `retries` | `process.env.CI ? 2 : 0` |
 | `workers` | `process.env.CI ? 1 : undefined` |
-| `reporter` | `html` |
+| `reporter` | `—` |
 | `trace` | `on-first-retry` |
 | `headless` | `false` |
 | Projects | `chromium` |
@@ -223,16 +258,23 @@ Failures produce artifacts under `test-results/`, and traces are captured when a
 
 ## Dependencies
 
+Runtime:
+
+- `allure-playwright` ^3.12.2
+- `dotenv` ^18.0.2
+
 Development:
 
 - `@playwright/test` ^1.63.0
 - `@types/node` ^26.5.1
+- `allure-commandline` ^2.46.1
 
 ## Scripts
 
 | Command | Runs |
 | --- | --- |
 | `npm run readme:sync` | `node scripts/readme-sync.js` |
+| `npm run concept:analysis` | `node scripts/concept-analysis.js` |
 
 ## Running Tests
 

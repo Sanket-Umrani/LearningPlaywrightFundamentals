@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "readme:sync": "node scripts/readme-sync.js"
+    "readme:sync": "node scripts/readme-sync.js",
+    "concept:analysis": "node scripts/concept-analysis.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +13,11 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.63.0",
-    "@types/node": "^26.5.1"
+    "@types/node": "^26.5.1",
+    "allure-commandline": "^2.46.1"
+  },
+  "dependencies": {
+    "allure-playwright": "^3.12.2",
+    "dotenv": "^18.0.2"
   }
 }

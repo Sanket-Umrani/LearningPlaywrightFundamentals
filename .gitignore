@@ -6,3 +6,12 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+.env
+
+# Saved browser session (contains live auth cookies/tokens)
+/user-session.json
+/user-session.json.bak
+
+# Allure report output
+/allure-results/
+/allure-report/
