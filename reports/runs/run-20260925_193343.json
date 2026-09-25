@@ -1,0 +1,6 @@
+{
+  "runId": "20260925_193343",
+  "tests": {
+    "chromium › 05_Allure&CustomReports\\245_TestWingifyArtifacts.spec.ts › capture dashboard screenshot, video, and trace": "failed"
+  }
+}

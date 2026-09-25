@@ -1,0 +1,584 @@
+# Concept Analysis
+
+> A beginner-friendly analysis of the concepts represented by the current repository changes.
+
+Generated: 2026-09-25.
+
+## Analyzed files
+
+- `playwright.config.ts` — M
+- `README.md` — M
+- `scripts/concept-analysis.js` — M
+- `scripts/readme-sync.js` — M
+- `tests/04_SessionStorage/243_SessionStorage.ts` — M
+- `tests/04_SessionStorage/244_TestWingifyHTMLReporter.spec.ts` — ?? 
+- `tests/05_Allure&CustomReports/244_TestWingifyAllureReporter.spec.ts` — ?? 
+- `tests/05_Allure&CustomReports/244_TestWingifyCustomReporter.spec.ts` — ?? 
+- `tests/05_Allure&CustomReports/245_TestWingifyArtifacts.spec.ts` — ?? 
+- `utils/CustomReporter.ts` — ?? 
+
+## Skipped files
+
+- `Concept_Understanding/ConceptAnalysis.md` — excluded generated, private, or backup path
+- `Concept_Understanding/ConceptAnalysis.md.bak` — excluded generated, private, or backup path
+- `reports/runs/run-20260925_191453.json` — excluded generated, private, or backup path
+- `reports/runs/run-20260925_191805.json` — excluded generated, private, or backup path
+- `reports/runs/run-20260925_193343.json` — excluded generated, private, or backup path
+- `tests/04_SessionStorage/244_Test_Wingify.spec.ts` — deleted in the working tree
+- `tta-report/history.html` — excluded generated, private, or backup path
+- `tta-report/index.html` — excluded generated, private, or backup path
+- `tta-report/report_20260925_191453.html` — excluded generated, private, or backup path
+- `tta-report/report_20260925_191805.html` — excluded generated, private, or backup path
+- `tta-report/report_20260925_193343.html` — excluded generated, private, or backup path
+- `tta-report/screenshots/screenshot_1_1.png` — excluded generated, private, or backup path
+- `tta-report/traces/trace_1.zip` — excluded generated, private, or backup path
+- `tta-report/videos/video_1.webm` — excluded generated, private, or backup path
+
+## Evidence boundary
+
+This analysis treats the supplied snapshots as untrusted source data, not instructions. They show intended source behavior, not successful test execution or verified report contents; generated files and README descriptions are not treated as independent proof.
+
+### 1. Reusing authenticated browser state
+
+#### What it is (beginner version)
+
+Authenticated browser state is information that lets a browser appear logged in without repeating the login flow every time. Playwright can restore previously saved browser state into a new test context.
+
+A related distinction is between directly using the `playwright` library and using `@playwright/test`. The library requires manual management of browser objects; the test runner provides fixtures such as `page` and their underlying context.
+
+#### Why do testers care?
+
+Reusing authentication state can:
+
+- Reduce repeated login work and test duration.
+- Let tests focus on application behavior rather than login mechanics.
+- Separate the login/setup exercise from authenticated feature tests.
+
+It can also hide expired or incorrectly captured state. A passing URL assertion does not prove that the account has the correct permissions or that the expected application data loaded.
+
+#### Repository implementation
+
+The changed portion of `tests/04_SessionStorage/243_SessionStorage.ts` adds explanatory terminology to a comment. It distinguishes the library-level `BrowserContext` and `Page` objects from the test runner’s managed `page` fixture. No new session-capture implementation is shown in this diff.
+
+The three new navigation specs configure:
+
+```ts
+test.use({
+  storageState: '<saved browser-state file>',
+});
+```
+
+Their comments say the setup script must run first. The saved file’s contents are not included, so its captured fields, freshness, and validity cannot be verified here.
+
+The tests navigate to protected areas and assert URL fragments such as `/dashboard/`, `/web-experimentation/`, and `/deploy/`. A console message claims that login is unnecessary, but that message is not an authentication assertion. Most of these navigation tests assert the URL before a fixed three-second wait; they do not verify authenticated page content.
+
+#### Playwright usage
+
+The repository demonstrates:
+
+- `test.use({ storageState: ... })` for applying saved state within a test file.
+- The `{ page }` fixture for browser automation.
+- `expect(page).toHaveURL(...)` for route-level verification.
+- A conceptual distinction between manual `playwright` object setup and runner-managed fixtures.
+
+The snapshots do not show the code that creates and saves the state, so they do not demonstrate exactly how authentication is captured.
+
+#### Selenium or alternative approach
+
+A Selenium alternative would generally manage the driver’s session, cookies, and browser profile through Selenium or its integration framework. Reusing that state usually requires custom setup and restore code.
+
+There is no Selenium implementation in these snapshots. The relevant comparison is that Playwright provides a direct `storageState` configuration path here, while a Selenium solution would depend on the chosen driver and framework.
+
+#### Comparison
+
+- **Playwright approach:** Reuse a saved state file through configuration.
+- **Alternative approach:** Perform login once and manually restore or recreate the relevant session data.
+- **Trade-off:** Faster authenticated tests versus the risk of stale or incorrectly permissioned state.
+
+The current tests verify navigation more than authenticated functionality. A URL can match while a page is still loading, showing an error, or displaying a login prompt.
+
+#### Interview-ready answer
+
+I use Playwright `storageState` to reuse authentication across tests without repeating login. I treat it as test setup, not proof of correct authorization: the saved state must be valid, and the test should verify the authenticated behavior it needs, not only the URL. In this repository, the tests demonstrate state reuse and route assertions, while the actual capture implementation is outside the supplied changes.
+
+#### Related files
+
+- `tests/04_SessionStorage/243_SessionStorage.ts`
+- `tests/04_SessionStorage/244_TestWingifyHTMLReporter.spec.ts`
+- `tests/05_Allure&CustomReports/244_TestWingifyAllureReporter.spec.ts`
+- `tests/05_Allure&CustomReports/244_TestWingifyCustomReporter.spec.ts`
+
+### 2. Running multiple reporters from one test execution
+
+#### What it is (beginner version)
+
+A reporter observes test-run events and produces output such as terminal text or report data. Playwright can configure multiple reporters for the same execution, so the tests do not need to be repeated separately for each reporting format.
+
+A filename containing “Reporter” does not automatically activate a reporter. Reporter selection is controlled by Playwright configuration.
+
+#### Why do testers care?
+
+Multiple reporters serve different audiences:
+
+- Terminal reporters provide immediate feedback.
+- Standard reporting tools produce structured results.
+- Custom reporters can create organization-specific dashboards.
+- CI systems can use the generated output for trends, notifications, and investigation.
+
+One execution is more efficient and avoids differences caused by running the same tests against different application states.
+
+#### Repository implementation
+
+`playwright.config.ts` now registers three reporters:
+
+```ts
+reporter: [
+  ['line'],
+  ['allure-playwright'],
+  ['./utils/CustomReporter.ts'],
+],
+```
+
+These entries are intended to run together for the configured projects.
+
+The new test filenames suggest reporter-specific exercises, but they do not change reporter selection:
+
+- The HTML-reporter test contains navigation checks only.
+- The Allure-reporter test contains the same navigation checks.
+- The custom-reporter test also contains the same navigation checks.
+
+There are no Allure-specific annotations or custom-reporter calls in these test files. The filenames are organizational labels, not evidence of three distinct testing behaviors.
+
+The README now documents additional test and report directories. Its file tree is documentation of observed repository structure, not proof that every run or report-generation path succeeded.
+
+#### Playwright usage
+
+The demonstrated Playwright configuration feature is the `reporter` array in `defineConfig`.
+
+The custom entry uses a relative path to a TypeScript reporter. The configuration selects the reporter; individual tests do not need to call it directly. The supplied snapshots do not establish the installed package versions or show a successful reporter run.
+
+#### Selenium or alternative approach
+
+Selenium itself does not define the reporting format. Selenium test frameworks often provide listeners, logging hooks, or output plugins. One framework might combine terminal output, a standard result format, and a custom HTML report, but that requires integration with the chosen framework.
+
+The general comparison remains the same: one execution can feed multiple reporting consumers, but the exact supported integrations depend on the runner.
+
+#### Comparison
+
+- **Console output:** Fast and lightweight, but limited for historical analysis.
+- **Standard result reporting:** Useful for CI and external dashboards.
+- **Custom HTML reporting:** Highly customizable, but the project must maintain it.
+
+These reporters do not create additional assertions or verify application behavior independently. Additional reporters also add processing and maintenance cost.
+
+#### Interview-ready answer
+
+I configure multiple Playwright reporters in one test run so the same execution can produce terminal feedback, standard result data, and a custom HTML view. I distinguish reporting from testing: a reporter consumes test events, while the assertions determine whether the test passes. I also avoid assuming a reporter is activated by a test filename—it must be registered in configuration.
+
+#### Related files
+
+- `playwright.config.ts`
+- `tests/04_SessionStorage/244_TestWingifyHTMLReporter.spec.ts`
+- `tests/05_Allure&CustomReports/244_TestWingifyAllureReporter.spec.ts`
+- `tests/05_Allure&CustomReports/244_TestWingifyCustomReporter.spec.ts`
+- `README.md`
+
+### 3. Capturing diagnostic artifacts
+
+#### What it is (beginner version)
+
+Diagnostic artifacts are recordings and files that help someone understand a test run after it finishes:
+
+- A screenshot shows the page’s visible state.
+- A video shows how the browser moved through the test.
+- A trace records detailed browser and test activity for later inspection.
+
+An attachment is a file or buffer associated with a test result.
+
+#### Why do testers care?
+
+Failures can depend on timing, rendering, redirects, or an interaction that is hard to describe from an error message alone. Artifacts provide evidence for debugging and can help non-automation testers understand what happened.
+
+Different artifacts answer different questions. A screenshot may show the final state but not the preceding interaction; a video may show the sequence but not every browser event; a trace can provide deeper execution details.
+
+#### Repository implementation
+
+`tests/05_Allure&CustomReports/245_TestWingifyArtifacts.spec.ts` enables artifact capture for its test scope:
+
+```ts
+test.use({
+  screenshot: 'on',
+  video: 'on',
+  trace: 'on',
+});
+```
+
+It also explicitly attaches a PNG screenshot:
+
+```ts
+await testInfo.attach('dashboard screenshot', {
+  body: await page.screenshot(),
+  contentType: 'image/png',
+});
+```
+
+The test navigates, waits three seconds, attaches the screenshot, and then checks the URL.
+
+`utils/CustomReporter.ts` consumes attachment metadata during `onTestEnd`:
+
+- PNG attachments are copied into `tta-report/screenshots/`.
+- WebM attachments with a file path are copied into `tta-report/videos/`.
+- Attachments named `trace` with a file path are copied into `tta-report/traces/`.
+
+The screenshot handler supports both an attachment path and an in-memory body. The video and trace handlers shown require an attachment path. This distinction is implemented in the reporter, not assumed from the test name.
+
+The README lists result and attachment file types, but the generated files were excluded from analysis. Their existence in documentation does not independently prove this exact test produced them.
+
+#### Playwright usage
+
+The exact concepts demonstrated are:
+
+- `screenshot`, `video`, and `trace` options in `test.use`.
+- `testInfo.attach(...)` for adding a test attachment.
+- `page.screenshot()` for capturing a PNG buffer.
+- `TestResult.attachments` inside a custom reporter.
+
+The spec does not declare explicit `test.step` blocks. The custom reporter’s step timeline therefore should not be assumed to contain meaningful steps for this particular test.
+
+#### Selenium or alternative approach
+
+A Selenium alternative could use driver screenshot capabilities, browser recording, and separate debugging tools. The exact recording facilities depend on the browser and integration framework.
+
+A replayable trace is not demonstrated by these Selenium-related comparisons. Building an equivalent diagnostic view usually requires additional integration work.
+
+#### Comparison
+
+- **Screenshot:** Easy to inspect, but represents one moment.
+- **Video:** Shows interaction order, but can be slower to review.
+- **Trace:** Supports detailed investigation, but requires the appropriate viewing tool.
+- **Explicit attachment:** Makes a particular screenshot part of the test result.
+
+Artifacts support diagnosis but do not replace assertions. Capturing a screenshot of an error page can still be a failed or weak test unless the test checks the correct behavior.
+
+#### Interview-ready answer
+
+I use screenshots, video, and traces as complementary debugging evidence. I enable capture at the appropriate test scope and attach named evidence when a specific artifact matters to the result. I also distinguish artifact creation from verification: recording a browser session does not prove that the application behaved correctly.
+
+#### Related files
+
+- `tests/05_Allure&CustomReports/245_TestWingifyArtifacts.spec.ts`
+- `utils/CustomReporter.ts`
+- `playwright.config.ts`
+
+### 4. Building a custom reporter with a real-time HTML view
+
+#### What it is (beginner version)
+
+A custom reporter is a program that listens to test-run events and transforms them into a useful representation. Here, it builds a standalone HTML report and updates that file while tests are running.
+
+The reporter maintains its own temporary model of tests, then turns that model into tables, detail panels, summaries, and links to artifacts.
+
+#### Why do testers care?
+
+A custom report can present information in a format suited to a particular team:
+
+- Overall run statistics.
+- Per-test status and duration.
+- Error details and stack traces.
+- Test logs and step information.
+- Links to screenshots, videos, and traces.
+- A history of previous reports.
+
+A useful report shortens the path from “the run failed” to “here is the evidence.”
+
+#### Repository implementation
+
+`utils/CustomReporter.ts` implements Playwright’s `Reporter` interface and uses these lifecycle methods:
+
+- `onBegin`
+- `onTestBegin`
+- `onStepBegin`
+- `onStepEnd`
+- `onTestEnd`
+- `onEnd`
+
+`onBegin` records the configuration, creates a run identifier, counts discovered tests, and initializes the report. `onTestBegin` creates a provisional record. `onTestEnd` collects the final status, errors, retry information, logs, and attachments.
+
+The reporter only records detailed `onStep` data when `step.category` is `test.step`. It calculates each step’s offset from the test start so the HTML can display a video-time range.
+
+The report is updated during the run by writing a new standalone HTML file and adding a five-second refresh directive. This is file-based near-real-time reporting, not a live server or streaming protocol.
+
+At `onEnd`, the reporter:
+
+- Prints a final summary.
+- Runs optional RCA and flaky-analysis integrations.
+- Writes the final report.
+- Creates an index page that redirects to the latest report.
+- Generates a history page for existing report files.
+
+The reporter’s counters summarize observed test-end events. They do not independently rerun tests or create a second pass/fail decision. Retry handling and the reporter’s suite totals are related but distinct concepts.
+
+#### Playwright usage
+
+The implementation uses Playwright’s `Reporter` interface and its run, test, result, and step event objects.
+
+`FullConfig` supplies run metadata, while `TestResult` supplies status, duration, retry, errors, output, and attachments. The reporter is registered in `playwright.config.ts` through the relative TypeScript path.
+
+The reporter also exposes `renderExternalRun(...)` for an intended non-Playwright integration. Its comment describes Cucumber input, but the supplied snapshots do not include that integration or prove that this method is called.
+
+#### Selenium or alternative approach
+
+A Selenium test framework can use listeners or plugins to collect results and produce reports. A custom Selenium-side report would similarly require an adapter from framework events into the report’s data model.
+
+The Playwright-specific advantage here is that the reporter interface and event objects are explicitly implemented. The general need for custom reporting is not unique to Playwright.
+
+#### Comparison
+
+- **Custom reporter versus built-in reporting:** More control, but more code to maintain.
+- **Custom reporter versus standard result formats:** A tailored user interface, but less ecosystem interoperability unless standard data is also produced.
+- **Live file updates versus a hosted dashboard:** Simpler local deployment, but no evidence here of multi-user access, authentication, or a live service.
+
+A custom report is a presentation of test evidence. It should not be treated as an independent test oracle.
+
+#### Interview-ready answer
+
+I use a custom Playwright reporter when the standard outputs do not provide the structure my team needs. I collect run events, maintain test data, link diagnostic artifacts, and generate a standalone HTML report. I understand the trade-off: custom reporting improves visibility but becomes software that must be maintained, tested, and secured like any other application component.
+
+#### Related files
+
+- `utils/CustomReporter.ts`
+- `playwright.config.ts`
+- `tests/05_Allure&CustomReports/245_TestWingifyArtifacts.spec.ts`
+- `README.md`
+
+### 5. Optional AI-assisted failure triage and self-healing reports
+
+#### What it is (beginner version)
+
+AI-assisted failure triage suggests a possible cause and possible fixes from failure information. A self-healing report proposes alternative locators when an expected element cannot be found.
+
+These outputs are diagnostic suggestions. They are not automatically verified fixes, and they do not change the application or test source merely by appearing in a report.
+
+#### Why do testers care?
+
+Failure information can be incomplete or difficult to interpret. Structured suggestions may help a tester:
+
+- Prioritize an investigation.
+- Recognize a likely category of failure.
+- Compare a broken locator with candidate alternatives.
+- Decide whether a failure is likely application-related or test-related.
+
+The important boundary is between a useful hypothesis and a proven cause.
+
+#### Repository implementation
+
+`utils/CustomReporter.ts` defines several optional diagnostic data collections:
+
+- `ai-data` attachments for captured AI-generated test data.
+- `aiVerdicts` for RCA verdicts containing severity, priority, root cause, and fixes.
+- `healReports` for broken-selector analysis and candidate outcomes.
+- A Flaky tab for cross-build comparison.
+
+The reporter attempts to load RCA and provider modules from optional local paths. If the RCA module is unavailable or the provider is not configured, it skips AI verdicts. It also limits RCA processing to the first ten failed or timed-out tests.
+
+The Self-Heal tab reads `self-heal` attachments and displays fields such as:
+
+- Failed selector and intent.
+- Candidate selectors and strategies.
+- Match count, visibility, and reasoning.
+- Rejected candidates and an optional unavailable reason.
+
+However, the reporter only renders data supplied by the attachment. The supplied code does not itself query the live page to prove that a candidate is unique or visible. The report explicitly presents the suggestions as recommendations and states that nothing was rewritten.
+
+Similarly, AI data is parsed for display when it is JSON. That formatting does not establish the data’s correctness or prove that it came from a successful test action.
+
+The corresponding AI agent modules are not included in the analyzed changes. Their availability and runtime behavior therefore cannot be established here.
+
+#### Playwright usage
+
+The Playwright-facing part is attachment-based:
+
+- Tests can use `testInfo.attach(...)` to provide diagnostic data.
+- The reporter reads named JSON attachments from `TestResult.attachments`.
+- Failure analysis uses the test title, location, error message, and stack.
+
+Self-healing and AI verdict generation are repository-specific extensions, not built-in Playwright actions demonstrated by the test specs.
+
+#### Selenium or alternative approach
+
+AI-assisted triage and locator suggestions can also sit beside Selenium tests; the browser automation library is not the deciding factor. The framework must expose failure details, locator context, and a place to store or display suggestions.
+
+No Selenium-specific AI or self-healing implementation is present in these snapshots.
+
+#### Comparison
+
+- **Proven test result:** Comes from the test runner and assertions.
+- **AI verdict:** A generated explanation that requires review.
+- **Self-heal candidate:** A proposed locator that requires independent verification.
+- **AI-generated data:** Supporting material whose provenance and quality must be checked.
+
+A report can display all of these clearly, but combining them in one interface does not make them equally reliable.
+
+#### Interview-ready answer
+
+I treat AI failure analysis and locator suggestions as diagnostic aids, not automatic truth. The reporter can collect failure details and structured attachment data, but a suggested root cause still needs verification, and a replacement locator must be checked against the live page before changing a test. This repository clearly separates reporting suggestions from automatic test rewriting.
+
+#### Related files
+
+- `utils/CustomReporter.ts`
+- `tests/05_Allure&CustomReports/245_TestWingifyArtifacts.spec.ts`
+- `README.md`
+
+### 6. Detecting flaky tests across separate runs
+
+#### What it is (beginner version)
+
+A flaky test sometimes passes and sometimes fails without a corresponding intentional change to the application or test. Detecting it requires observing more than one run.
+
+A retry inside a single execution and a comparison between separate builds are related ideas, but they are not identical.
+
+#### Why do testers care?
+
+Flaky tests create false alarms and reduce confidence in automated results. They can also hide real regressions when teams eventually ignore failures.
+
+Cross-run comparison helps answer:
+
+- Which tests changed status between builds?
+- Which tests remain failing?
+- Which failures may be intermittent?
+- Is the suite becoming less stable?
+
+#### Repository implementation
+
+`utils/CustomReporter.ts` creates run summaries in `reports/runs/`. Each summary contains a run identifier and a mapping from a test’s full title to its status.
+
+Before writing the current summary, the implementation:
+
+1. Reads the directory.
+2. Keeps JSON files.
+3. Sorts their filenames.
+4. Loads the most recent existing summary as the previous build.
+5. Writes the current summary.
+
+If no previous summary exists, it reports that another run is needed for comparison.
+
+The reporter then calls the optional flaky-analysis module and displays counts, test names, previous/current run identifiers, and an optional summary. The supplied snapshots do not include that module’s classification algorithm, so they do not establish the exact rule used to label a test as flaky.
+
+The `SuiteStats` structure contains a `flaky` field, but the shown `onTestEnd` logic updates passed, failed, and skipped counts without independently deriving a flaky verdict. The reporter records `result.retry`, but retry metadata is not itself proof of cross-build flakiness.
+
+The generated run summaries were excluded from this analysis, so no actual flaky classification can be confirmed.
+
+#### Playwright usage
+
+The Playwright reporter provides each test’s final event data and retry information. The custom reporter converts that data into a stable run summary and compares it with an earlier summary.
+
+This is a custom trend-analysis feature. It is separate from Playwright’s built-in test execution, assertions, and artifact capture.
+
+#### Selenium or alternative approach
+
+A Selenium framework or CI system could also retain historical results and compare them. Retry policies, test-management platforms, and CI dashboards are possible approaches.
+
+None of those alternatives is implemented in the supplied files. The key distinction is historical comparison, not the use of Selenium rather than Playwright.
+
+#### Comparison
+
+- **Retry:** Gives a test another opportunity in the same execution.
+- **Cross-build comparison:** Compares independently recorded outcomes.
+- **Consistently failing test:** Fails in both builds.
+- **Flaky candidate:** Changes outcome across builds, subject to the analyzer’s actual classification rules.
+
+Historical comparison is useful, but title-based matching and run availability can affect the result. The snapshots demonstrate the storage and comparison structure, not the quality of the underlying classification.
+
+#### Interview-ready answer
+
+I distinguish flaky-test detection from ordinary failure reporting. This repository stores per-test statuses for each run and compares the current summary with the most recent previous summary. I would validate the analyzer’s classification rules and matching strategy before treating its output as a reliable flakiness verdict, and I would not equate a retry with cross-build evidence.
+
+#### Related files
+
+- `utils/CustomReporter.ts`
+- `README.md`
+
+### 7. Generating concept notes from a bounded working-tree snapshot
+
+#### What it is (beginner version)
+
+Working-tree concept analysis turns the current source changes into structured learning notes. Instead of receiving only a concept name, the script can discover modified and untracked files, prepare a bounded snapshot, and ask a headless research process to analyze it.
+
+This is repository tooling around Playwright tests, not a Playwright browser API.
+
+#### Why do testers care?
+
+An automated change summary can help engineers:
+
+- Identify newly introduced testing concepts.
+- Keep learning notes aligned with the repository.
+- Review how configuration, tests, and tooling relate.
+- Avoid manually listing every changed file.
+
+It is a documentation aid, not a quality gate. An analysis can describe code without proving that the code works.
+
+#### Repository implementation
+
+`scripts/concept-analysis.js` now supports two modes:
+
+- A named concept such as `npm run concept:analysis Codegen`.
+- Automatic working-tree analysis with `npm run concept:analysis`.
+
+Automatic mode:
+
+1. Verifies that the directory is a Git working tree with at least one commit.
+2. Collects tracked differences against `HEAD`.
+3. Collects untracked files while respecting standard Git exclusions.
+4. Deduplicates and sorts file records.
+5. Skips deleted files.
+6. Excludes generated, private, backup, binary, and unsupported paths.
+7. Reads a bounded diff or untracked text snapshot.
+8. Builds an analyzed/skipped manifest and a Markdown research prompt.
+9. Writes `Concept_Understanding/ConceptAnalysis.md` after a successful research result.
+
+The script defines:
+
+- A 256 KiB per-file source limit.
+- A 100,000-character per-block limit.
+- A 1,500,000-character aggregate limit.
+- A text-extension and special-filename allowlist.
+- Pattern-based exclusion of likely sensitive or generated files.
+- Targeted redaction attempts for sensitive-looking source lines.
+
+The generated prompt explicitly treats repository contents as untrusted data and asks for only a finished Markdown document. This reduces the chance that repository text is treated as higher-level instructions, but it is not a guarantee that every sensitive value will be detected.
+
+`--no-ai` creates a template instead of running the research process. Automatic mode refreshes its dedicated analysis file; `--force` governs overwriting an existing named concept note. Existing notes are backed up before replacement.
+
+`scripts/readme-sync.js` adds generated documentation for named and automatic concept-analysis modes. The supplied snapshots do not demonstrate a successful research run, compilation check, or automated test of the script’s new behavior.
+
+#### Playwright usage
+
+There is no Playwright browser usage in this script. It operates on Git metadata and source text around the test repository.
+
+The generated notes can explain Playwright concepts found in changed files, but `scripts/concept-analysis.js` does not launch a browser, run tests, or inspect application behavior.
+
+#### Selenium or alternative approach
+
+This tooling is largely independent of Selenium or Playwright. A CI diff service, code-review workflow, static-analysis system, or another documentation generator could provide similar functionality.
+
+The important comparison is automated source discovery versus manual review, not Selenium versus Playwright.
+
+#### Comparison
+
+- **Named concept mode:** Focuses on a requested subject.
+- **Automatic mode:** Focuses on the current source/config changes.
+- **Bounded snapshot:** Limits token, file-size, and total input growth.
+- **Excluded output:** Prevents generated reports and backups from being repeatedly analyzed.
+- **Manual review:** Can interpret intent more deeply, but is less repeatable and easier to forget.
+
+The script provides safeguards, but it does not establish that the analyzed code is correct, secure, or executable.
+
+#### Interview-ready answer
+
+I added a bounded working-tree analysis mode that collects modified and untracked source files, excludes generated and sensitive paths, and produces a structured concept note. I treat repository content as untrusted input, cap file and prompt sizes, and keep the analysis separate from test execution. The snapshots demonstrate the implementation, not a successful end-to-end research run.
+
+#### Related files
+
+- `scripts/concept-analysis.js`
+- `scripts/readme-sync.js`
+- `README.md`

@@ -1,6 +1,8 @@
 # Taste
 - Uses Playwright with TypeScript for browser test specs (`.spec.ts`) as their primary learning/automation stack. Confidence: 0.5
 - Prefers documentation (e.g. README) to be generated programmatically from source-of-truth files via a namespaced npm script (e.g. `npm run readme:sync`) rather than hand-maintained, so docs stay in sync with the code. Confidence: 0.7
+- Prefers a single command to expose two invocation modes: an explicit positional argument for a named target, plus a no-argument mode that derives its work automatically from the current repo state (e.g. analyzing untracked + modified files into a fixed output file). Both forms must keep working side by side. Confidence: 0.8
+- Wants automatic/no-argument modes to stay re-runnable on future changes without an explicit `--force`/overwrite step — a repeat run should just refresh the generated artifact (keeping the previous version as `.bak`). Confidence: 0.7
 - Prefers repetitive workflows (docs generation, git stage/commit/push) automated as standalone `node <script>.js` CLI commands run from the repo root (e.g. `auto-push-agent.js`) rather than doing the steps manually. Confidence: 0.8
 - Wants tooling built for repeat future use rather than one-off tasks: asks for reusable commands that take a positional argument (e.g. `npm run concept:analysis <Concept>`) so the same command covers any future case. Confidence: 0.75
 - Expects automation commands to perform the whole task autonomously end-to-end (e.g. actually research a concept and produce the finished note) rather than scaffold a blank template the user must fill in by hand. Confidence: 0.55

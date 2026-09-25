@@ -1,0 +1,8 @@
+{
+  "runId": "20260925_191805",
+  "tests": {
+    "chromium › 05_Allure&CustomReports\\244_TestWingifyCustomReporter.spec.ts › go directly to Web Experimentation — Test2": "failed",
+    "chromium › 05_Allure&CustomReports\\244_TestWingifyCustomReporter.spec.ts › go directly to dashboard — Test1": "failed",
+    "chromium › 05_Allure&CustomReports\\244_TestWingifyCustomReporter.spec.ts › go directly to Web Rollout — Test3": "failed"
+  }
+}

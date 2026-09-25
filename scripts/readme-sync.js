@@ -260,6 +260,26 @@ function build() {
   );
   out.push('Failures produce artifacts under `test-results/`, and traces are captured when a test is retried.', '');
 
+  out.push('## Concept Analysis', '');
+  out.push(
+    'The `npm run concept:analysis` command supports both explicit concepts and working-tree analysis:',
+    '',
+    '```bash',
+    'npm run concept:analysis Codegen',
+    'npm run concept:analysis "Session State"',
+    'npm run concept:analysis',
+    'npm run concept:analysis -- --no-ai',
+    'npm run concept:analysis -- --list',
+    '```',
+    '',
+    '- With a concept name, it researches that concept and writes `Concept_Understanding/<Concept>.md`.',
+    '- With no concept name, it reads the current tracked modifications and untracked source/config files, then writes `Concept_Understanding/ConceptAnalysis.md`.',
+    '- Automatic analysis skips generated reports, secrets, binaries, backups, and its own previous output; recurring runs keep the prior automatic note as `ConceptAnalysis.md.bak`.',
+    '- `--no-ai` writes a template instead of launching the headless research process, and `--force` is required to overwrite an existing named concept note.',
+    '',
+    'The automatic mode is designed for future changes: rerun it after modifying source, tests, or configuration files.',
+    '',
+  );
   out.push('## Dependencies', '');
   if (runtimeDeps.length) out.push('Runtime:', '', ...runtimeDeps.map(([dep, v]) => '- `' + dep + '` ' + v), '');
   if (devDeps.length) out.push('Development:', '', ...devDeps.map(([dep, v]) => '- `' + dep + '` ' + v), '');

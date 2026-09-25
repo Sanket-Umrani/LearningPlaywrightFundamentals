@@ -27,21 +27,73 @@ The second command downloads the Chromium binary required by the configured proj
 ```
 LearningPlaywrightFundamentals/
 ├── allure-results/
+│   ├── 00772f07-9409-44cc-b9a8-60cb2f7b446c-result.json
+│   ├── 0865df30-b653-4b6b-888e-fb9f46776373-result.json
+│   ├── 140fc1a0-f667-446e-8276-d6dfb909432d-result.json
 │   ├── 17a1bb8b-2a24-463a-8734-f1e0eeabbdd1-result.json
 │   ├── 1d21e7dd-6ba9-4595-b40e-b33334d1ffb8-result.json
+│   ├── 28611b04-c7b6-4bbc-8ab8-bd470e2f10a2-result.json
+│   ├── 2ec6f6bd-d5a3-4aae-a099-eb892965be3e-result.json
+│   ├── 322131ea-6fca-435d-9ce2-76a3045acbff-result.json
+│   ├── 3da9edbf-7fec-4b15-adfd-0fe6ea4de37c-result.json
+│   ├── 46f8449b-e92d-474e-8e9e-996034fc2c8c-result.json
+│   ├── 475284d5-690d-4674-b5bc-ea900dfde2c2-result.json
+│   ├── 4d4b5790-7305-4692-ac90-c71b4903322f-result.json
+│   ├── 515b8fc9-9d78-4b90-a2b0-ce73a3828e98-result.json
 │   ├── 53aa276a-cbac-449c-9fb0-14f7f622da36-attachment.txt
+│   ├── 585257a8-3fc3-40db-8169-e69c9109a48c-result.json
 │   ├── 585a3bbe-5427-4ade-9324-1ea25513fbf9-result.json
+│   ├── 58d97f8b-1bb4-41a0-8777-c65872841f5a-result.json
+│   ├── 5a5898a4-b1fb-4afa-8384-e1ce0bc233d1-result.json
+│   ├── 5d5c5cb8-a0f0-417b-adc2-8558e44a96b7-result.json
+│   ├── 67aaa35e-76f0-44f3-b60c-a30fe637c842-result.json
+│   ├── 6a2c2653-9246-4d84-a67d-1b75475a724b-result.json
 │   ├── 6bf7e483-5006-402e-816d-7d2b0f306ed0-attachment.txt
+│   ├── 6d6f483f-004f-4df0-9744-2a409a1531f7-result.json
 │   ├── 6e60ca35-8b33-42d6-90e5-81b9bd3ab42b-attachment.txt
+│   ├── 6fbc8ddb-595f-4ca5-9018-302ee18030d3-result.json
+│   ├── 75c7434c-4ce2-46e9-b346-f901b38f9991-result.json
 │   ├── 7d07cabf-d788-4daf-a89c-b94fb4d5f65d-attachment.txt
+│   ├── 816d8e85-a56f-4585-bf86-1326ee418c70-result.json
+│   ├── 8d020ff2-3e98-46fe-be95-2648ce352cb3-result.json
+│   ├── 8dade226-11e2-46a9-9c03-d96eecf2f8e9-result.json
+│   ├── 8f0a2536-2d89-4bee-87d6-7dc9082e70de-result.json
+│   ├── 9155381d-a66b-4c92-b8ea-34b45d829ec0-result.json
+│   ├── 98f4a67c-f9c0-4ac4-b45a-c9c10952ab5d-result.json
+│   ├── a37a3c93-ab4f-4409-b297-0a9979fa38ff-attachment.md
+│   ├── acefe2d2-cb72-49d7-9518-92f7925b171c-attachment.png
+│   ├── b291abcf-e730-425f-a6d6-97aa8b2d2f70-attachment.png
 │   ├── b3faadbf-036b-49e0-a726-c817f078f92d-result.json
+│   ├── b9b4a8c4-6e40-446e-aca1-71f0f011afd0-result.json
+│   ├── b9c9eb00-bf97-4d15-a03e-d32218639de2-result.json
+│   ├── baf3457d-4281-4a5e-bf59-1922d7816ab4-attachment.md
+│   ├── bcf7ce93-d09a-4c9b-81b0-7007f86f2419-result.json
+│   ├── be74c249-4947-40d3-94d4-d2f08fb43a7d-result.json
+│   ├── beb26b7f-9dcc-4648-9be5-9cac04fe0fb6-result.json
+│   ├── c020cbe2-810d-46df-ad10-356e9daea40f-attachment.zip
+│   ├── c3afe77a-7685-4fd7-acf1-319b7e2eef70-result.json
+│   ├── c6b20e7c-5f50-444c-852a-5086e7462a88-attachment.md
 │   ├── cbe8d8c7-1035-49b3-adf6-322603224724-attachment.txt
+│   ├── d0261469-0249-4f10-a817-757cf9112471-result.json
+│   ├── d142d928-ca9b-43ee-b190-0c5fb3636042-result.json
+│   ├── d217cbde-5750-4546-b7df-c1fb6bdb7c25-result.json
 │   ├── d26df4a6-5f68-4673-90e8-8132e171430b-result.json
+│   ├── d2fe3438-cec9-4e5d-8f63-531b2a9f2324-result.json
+│   ├── d7128d75-c4a7-4b7d-a7c8-4d258e283d4d-result.json
+│   ├── ddf7a1dd-46c3-4913-8705-146be58a59ce-attachment.md
+│   ├── e0a8ada4-ea91-4451-bcbc-0ab16fe59c02-result.json
 │   ├── e9984ffb-6fb4-461e-99dc-b9ea17ee1cb3-result.json
-│   └── effa0771-aba7-4422-9c56-b3ed35177319-attachment.txt
+│   ├── effa0771-aba7-4422-9c56-b3ed35177319-attachment.txt
+│   ├── f41b246d-ca03-471a-89dd-c53b3cb70b9c-attachment.webm
+│   └── f80e5622-fe7b-4a9f-8474-9a7d66f0b9d2-result.json
 ├── Concept_Understanding/
 │   ├── Codegen.md
-│   └── Session_State.md
+│   ├── ConceptAnalysis.md
+│   ├── ConceptAnalysis.md.bak
+│   ├── Session_State.md
+│   └── Session_Storage.md
+├── reports/
+│   └── runs/
 ├── scripts/
 │   ├── concept-analysis.js
 │   └── readme-sync.js
@@ -50,11 +102,23 @@ LearningPlaywrightFundamentals/
 │   ├── 02_TestAnnotations/
 │   ├── 03_Locator_Commands/
 │   ├── 04_SessionStorage/
+│   ├── 05_Allure&CustomReports/
 │   ├── 22_Misc_AI_concepts/
 │   ├── 23_Advance_Playwright_Framework/
 │   ├── Concept_Understanding/
 │   ├── example.spec.ts
 │   └── PracticePrograms/
+├── tta-report/
+│   ├── history.html
+│   ├── index.html
+│   ├── report_20260925_191453.html
+│   ├── report_20260925_191805.html
+│   ├── report_20260925_193343.html
+│   ├── screenshots/
+│   ├── traces/
+│   └── videos/
+├── utils/
+│   └── CustomReporter.ts
 ├── .env
 ├── .env-example
 ├── .gitignore
@@ -207,7 +271,7 @@ Target: https://katalon-demo-cura.herokuapp.com/
 
 - **Verfiy the error message in the wingify free trial**
 
-### `tests/04_SessionStorage/244_Test_Wingify.spec.ts`
+### `tests/04_SessionStorage/244_TestWingifyHTMLReporter.spec.ts`
 
 Targets:
 - https://app.wingify.com/#/dashboard?accountId=1281646
@@ -219,6 +283,40 @@ Targets:
 - **go directly to dashboard — Test1**
 - **go directly to Web Experimentation — Test2**
 - **go directly to Web Rollout — Test3**
+
+### `tests/05_Allure&CustomReports/244_TestWingifyAllureReporter.spec.ts`
+
+Targets:
+- https://app.wingify.com/#/dashboard?accountId=1281646
+- https://app.wingify.com/#/web-experimentation?accountId=1281646
+- https://app.wingify.com/#/deploy/experience/?accountId=1281646
+
+3 test case(s):
+
+- **go directly to dashboard — Test1**
+- **go directly to Web Experimentation — Test2**
+- **go directly to Web Rollout — Test3**
+
+### `tests/05_Allure&CustomReports/244_TestWingifyCustomReporter.spec.ts`
+
+Targets:
+- https://app.wingify.com/#/dashboard?accountId=1281646
+- https://app.wingify.com/#/web-experimentation?accountId=1281646
+- https://app.wingify.com/#/deploy/experience/?accountId=1281646
+
+3 test case(s):
+
+- **go directly to dashboard — Test1**
+- **go directly to Web Experimentation — Test2**
+- **go directly to Web Rollout — Test3**
+
+### `tests/05_Allure&CustomReports/245_TestWingifyArtifacts.spec.ts`
+
+Target: https://app.wingify.com/#/dashboard?accountId=1281646
+
+1 test case(s):
+
+- **capture dashboard screenshot, video, and trace**
 
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
@@ -255,6 +353,25 @@ From `playwright.config.ts`:
 | Projects | `chromium` |
 
 Failures produce artifacts under `test-results/`, and traces are captured when a test is retried.
+
+## Concept Analysis
+
+The `npm run concept:analysis` command supports both explicit concepts and working-tree analysis:
+
+```bash
+npm run concept:analysis Codegen
+npm run concept:analysis "Session State"
+npm run concept:analysis
+npm run concept:analysis -- --no-ai
+npm run concept:analysis -- --list
+```
+
+- With a concept name, it researches that concept and writes `Concept_Understanding/<Concept>.md`.
+- With no concept name, it reads the current tracked modifications and untracked source/config files, then writes `Concept_Understanding/ConceptAnalysis.md`.
+- Automatic analysis skips generated reports, secrets, binaries, backups, and its own previous output; recurring runs keep the prior automatic note as `ConceptAnalysis.md.bak`.
+- `--no-ai` writes a template instead of launching the headless research process, and `--force` is required to overwrite an existing named concept note.
+
+The automatic mode is designed for future changes: rerun it after modifying source, tests, or configuration files.
 
 ## Dependencies
 

@@ -1,5 +1,5 @@
 import {chromium} from 'playwright'; //if we use playwright then we need to manually create BrowserContext Context Page and purpose is for creating utilities using playwright
-//import {test,expect} from '@playwright/test'; when we use @playwright/test, the test already has page fixture created which includes Browser Context and Page 
+//import {test,expect} from '@playwright/test'; when we use @playwright/test, the test already has page fixture created which includes BrowserContext,Context and Page 
 import dotenv from "dotenv"
 dotenv.config(); //credentials live in .env which is made gitignored
 const VWO_USER=process.env.VWO_USER;
