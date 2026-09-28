@@ -34,8 +34,8 @@ test('tc#1 - Verify that the vwo page is laoded', async({page})=>{
     let passwordField = page.locator("#login-password");
     let loginButton = page.locator("#js-login-btn");
     
-    await userNameField.fill("admin@admin.com");
-    await passwordField.fill("pass123");
+    await userNameField.fill(process.env.VWO_NEGATIVE_USER!);
+    await passwordField.fill(process.env.VWO_NEGATIVE_PASS!);
     await loginButton.click();
 
     let error_message = page.locator('#js-notification-box-msg'); //this is the actual result

@@ -27,27 +27,38 @@ The second command downloads the Chromium binary required by the configured proj
 ```
 LearningPlaywrightFundamentals/
 ├── allure-results/
+│   ├── 005c52ab-7e8f-4c46-9233-3ef71784c393-attachment.txt
 │   ├── 00772f07-9409-44cc-b9a8-60cb2f7b446c-result.json
+│   ├── 02bfe95f-e711-4a82-8201-654bc58afca0-result.json
 │   ├── 0865df30-b653-4b6b-888e-fb9f46776373-result.json
+│   ├── 08aa185c-a945-4b87-bd8c-0d413983e6d3-attachment.md
 │   ├── 13b84345-799e-4fd4-a136-501fe217da97-attachment.txt
 │   ├── 140fc1a0-f667-446e-8276-d6dfb909432d-result.json
 │   ├── 141a5b5c-c90c-4b50-ad1f-0c9887577816-result.json
+│   ├── 16088488-2ee3-48a4-940e-04c25df994cf-attachment.md
 │   ├── 17a1bb8b-2a24-463a-8734-f1e0eeabbdd1-result.json
+│   ├── 1c976484-05d7-4c2c-81ef-34f773206468-result.json
 │   ├── 1d21e7dd-6ba9-4595-b40e-b33334d1ffb8-result.json
+│   ├── 23a77704-eda9-4ce5-be29-ac962e91e7a0-attachment.md
 │   ├── 28611b04-c7b6-4bbc-8ab8-bd470e2f10a2-result.json
+│   ├── 293deae0-555a-455b-873b-81a0f737f930-result.json
+│   ├── 2b17418a-5467-4378-aacb-c5f36acbf554-result.json
 │   ├── 2b4c2268-ff8b-47c7-8be3-74430ceabb78-attachment.txt
 │   ├── 2ec6f6bd-d5a3-4aae-a099-eb892965be3e-result.json
 │   ├── 2f3de3f6-b625-4629-8dc7-d09fcd826fa4-attachment.txt
 │   ├── 32129a4b-6b59-44a1-9239-96936f548b3a-result.json
 │   ├── 322131ea-6fca-435d-9ce2-76a3045acbff-result.json
+│   ├── 362f75a4-4571-4455-a4e4-73d1be6388ff-result.json
 │   ├── 39f974b2-d61f-41be-aeb5-2b9430a71d04-attachment.txt
 │   ├── 3b42b078-6e91-464c-b35a-32b1905dc748-attachment.txt
+│   ├── 3cd8dcd1-9a84-49b0-937a-b6732991294c-attachment.md
 │   ├── 3da9edbf-7fec-4b15-adfd-0fe6ea4de37c-result.json
 │   ├── 3ea4656d-88a6-4b3c-beb9-d5954e34bdf3-result.json
 │   ├── 46f8449b-e92d-474e-8e9e-996034fc2c8c-result.json
 │   ├── 475284d5-690d-4674-b5bc-ea900dfde2c2-result.json
 │   ├── 49f1c111-8857-4a86-95d6-ee5433aa5fa2-result.json
 │   ├── 4d4b5790-7305-4692-ac90-c71b4903322f-result.json
+│   ├── 4ea18860-27f4-4202-8375-1c5c49acc22b-result.json
 │   ├── 4ff019c0-0f8d-4227-b865-7148376d92c5-attachment.txt
 │   ├── 4ff64b21-c73b-498a-9f5b-545e80cdd9ec-attachment.txt
 │   ├── 515b8fc9-9d78-4b90-a2b0-ce73a3828e98-result.json
@@ -61,33 +72,46 @@ LearningPlaywrightFundamentals/
 │   ├── 585a3bbe-5427-4ade-9324-1ea25513fbf9-result.json
 │   ├── 58d97f8b-1bb4-41a0-8777-c65872841f5a-result.json
 │   ├── 5a5898a4-b1fb-4afa-8384-e1ce0bc233d1-result.json
+│   ├── 5d34522a-2d00-41df-beb4-7af1a3cad0e7-result.json
 │   ├── 5d5c5cb8-a0f0-417b-adc2-8558e44a96b7-result.json
+│   ├── 5e31f777-266d-4e45-b5f8-9b5b3bda6c9b-result.json
 │   ├── 67aaa35e-76f0-44f3-b60c-a30fe637c842-result.json
 │   ├── 6a2c2653-9246-4d84-a67d-1b75475a724b-result.json
 │   ├── 6bf7e483-5006-402e-816d-7d2b0f306ed0-attachment.txt
 │   ├── 6d6f483f-004f-4df0-9744-2a409a1531f7-result.json
 │   ├── 6e60ca35-8b33-42d6-90e5-81b9bd3ab42b-attachment.txt
 │   ├── 6fbc8ddb-595f-4ca5-9018-302ee18030d3-result.json
+│   ├── 7067a864-a9cb-433e-93d7-4383a4040556-result.json
+│   ├── 73711e95-3a55-4c51-bd20-74d5a1c22598-result.json
 │   ├── 73a59e1d-a273-4cc9-a887-bd77c6965d71-attachment.md
 │   ├── 74816ef7-c4c6-4934-ac17-5aac4db26b61-attachment.txt
 │   ├── 75c7434c-4ce2-46e9-b346-f901b38f9991-result.json
 │   ├── 79b21379-4edc-43a4-bdb4-e8d5e85880e5-attachment.txt
+│   ├── 79eac24b-d682-4971-a43c-54e54591892b-attachment.md
+│   ├── 7ba813bd-b760-4392-9579-a8126a730dea-attachment.md
 │   ├── 7d07cabf-d788-4daf-a89c-b94fb4d5f65d-attachment.txt
+│   ├── 80225b17-81dd-4c24-95c7-0a95fb09e282-attachment.md
 │   ├── 816d8e85-a56f-4585-bf86-1326ee418c70-result.json
 │   ├── 86445dbb-7067-42fe-8d8d-3c1e2380303a-attachment.txt
 │   ├── 8d020ff2-3e98-46fe-be95-2648ce352cb3-result.json
 │   ├── 8dade226-11e2-46a9-9c03-d96eecf2f8e9-result.json
 │   ├── 8dea496d-2e77-418a-83cf-ed7962c3abd9-result.json
 │   ├── 8f0a2536-2d89-4bee-87d6-7dc9082e70de-result.json
+│   ├── 8fee0722-5bad-4fdb-b7f2-0c0c1a9898ad-result.json
 │   ├── 9127255e-1e50-406f-b45e-0f5338da6c7b-result.json
 │   ├── 9155381d-a66b-4c92-b8ea-34b45d829ec0-result.json
 │   ├── 91648a98-c965-4856-b684-bd1d03341fd2-result.json
+│   ├── 97d5b330-98c8-4133-870e-1ad427330d3f-attachment.md
 │   ├── 98f4a67c-f9c0-4ac4-b45a-c9c10952ab5d-result.json
+│   ├── 9ef3493d-9298-4a5c-96c5-90e7b1313e72-result.json
+│   ├── a2535d6c-150c-4fde-915c-52ecc595affc-attachment.txt
 │   ├── a2766383-1644-49f8-9b40-4421408de4ef-result.json
 │   ├── a37a3c93-ab4f-4409-b297-0a9979fa38ff-attachment.md
 │   ├── a4d3f256-eb55-4143-bdb1-0abdeb87527a-attachment.txt
 │   ├── a734d745-df92-4a96-a5e7-7be36a3e554e-attachment.txt
 │   ├── a8ce3372-90ad-4075-8c3e-c6200ef3a34e-result.json
+│   ├── a9787707-77e1-49d0-b9f4-8db05b331234-result.json
+│   ├── ab88e54a-475a-499d-8024-c8b6379cd075-result.json
 │   ├── abed6804-b1f8-4f5a-b3c5-4e2be14b6627-result.json
 │   ├── acefe2d2-cb72-49d7-9518-92f7925b171c-attachment.png
 │   ├── ae476854-4282-438b-8512-ffd8d7ff4d8d-attachment.txt
@@ -100,6 +124,7 @@ LearningPlaywrightFundamentals/
 │   ├── b9b4a8c4-6e40-446e-aca1-71f0f011afd0-result.json
 │   ├── b9c9eb00-bf97-4d15-a03e-d32218639de2-result.json
 │   ├── baf3457d-4281-4a5e-bf59-1922d7816ab4-attachment.md
+│   ├── bb4f4be6-cc9a-40aa-9534-ae1484245088-result.json
 │   ├── bcf7ce93-d09a-4c9b-81b0-7007f86f2419-result.json
 │   ├── be74c249-4947-40d3-94d4-d2f08fb43a7d-result.json
 │   ├── beb26b7f-9dcc-4648-9be5-9cac04fe0fb6-result.json
@@ -110,7 +135,10 @@ LearningPlaywrightFundamentals/
 │   ├── c4939cc6-5dda-4c9f-955e-4aeb5140debc-attachment.txt
 │   ├── c55e67f0-c0bf-4b74-8ad6-e740acf8ae6e-attachment.txt
 │   ├── c6b20e7c-5f50-444c-852a-5086e7462a88-attachment.md
+│   ├── c6c4282c-4010-43f1-8783-7ed8513d1a6f-result.json
+│   ├── cbdee0bc-cda3-4b20-ab59-10e25774e6d7-attachment.md
 │   ├── cbe8d8c7-1035-49b3-adf6-322603224724-attachment.txt
+│   ├── ceb0134a-e0ea-4207-9c65-f0c66276c373-result.json
 │   ├── d0261469-0249-4f10-a817-757cf9112471-result.json
 │   ├── d106c5db-f129-4d3c-9980-ff5f20f1cb7e-result.json
 │   ├── d142d928-ca9b-43ee-b190-0c5fb3636042-result.json
@@ -180,6 +208,23 @@ LearningPlaywrightFundamentals/
 │   ├── report_20260928_121206.html
 │   ├── report_20260928_121317.html
 │   ├── report_20260928_121411.html
+│   ├── report_20260928_125912.html
+│   ├── report_20260928_155822.html
+│   ├── report_20260928_155953.html
+│   ├── report_20260928_160104.html
+│   ├── report_20260928_173325.html
+│   ├── report_20260928_174154.html
+│   ├── report_20260928_232030.html
+│   ├── report_20260928_232134.html
+│   ├── report_20260928_232301.html
+│   ├── report_20260928_232529.html
+│   ├── report_20260928_234024.html
+│   ├── report_20260928_234212.html
+│   ├── report_20260928_234709.html
+│   ├── report_20260929_000441.html
+│   ├── report_20260929_000537.html
+│   ├── report_20260929_000640.html
+│   ├── report_20260929_000730.html
 │   ├── screenshots/
 │   ├── traces/
 │   └── videos/
@@ -187,6 +232,7 @@ LearningPlaywrightFundamentals/
 │   └── CustomReporter.ts
 ├── .env
 ├── .env-example
+├── .env.backup-pre-edit
 ├── .gitignore
 ├── auto-push-agent.js
 ├── package-lock.json
@@ -225,10 +271,6 @@ Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
 1 test case(s):
 
 - **test**
-
-> **Warning:** line 7 hard-codes the literal `shreyas` in a `fill()` call. Move credentials to environment variables before this repository is shared.
-
-> **Warning:** line 9 hard-codes the literal `1234567` in a `fill()` call. Move credentials to environment variables before this repository is shared.
 
 ### `tests/01_Basics/232_BCP.spec.ts`
 
@@ -305,10 +347,6 @@ Target: https://app.vwo.com
 
 - **tc#1 - Verify that the vwo page is laoded**
 
-> **Warning:** line 37 hard-codes the literal `admin@admin.com` in a `fill()` call. Move credentials to environment variables before this repository is shared.
-
-> **Warning:** line 38 hard-codes the literal `pass123` in a `fill()` call. Move credentials to environment variables before this repository is shared.
-
 ### `tests/03_Locator_Commands/240_Project3.spec.ts`
 
 Target: https://wingify.com/free-trial/
@@ -324,10 +362,6 @@ Target: https://app.wingify.com/#/login
 1 test case(s):
 
 - **Verfiy the error message in the wingify free trial**
-
-> **Warning:** line 7 hard-codes the literal `admin@vwo.com` in a `fill()` call. Move credentials to environment variables before this repository is shared.
-
-> **Warning:** line 8 hard-codes the literal `1234` in a `fill()` call. Move credentials to environment variables before this repository is shared.
 
 ### `tests/03_Locator_Commands/242_getByRole.spec.ts`
 
@@ -408,7 +442,7 @@ Target: https://app.thetestingacademy.com/playwright/webtable
 
 - **Verify the TestCase**
 
-### `tests/07_WebTables/248_TestCase.spec.ts`
+### `tests/07_WebTables/248_UsingNthof(i).spec.ts`
 
 Target: https://awesomeqa.com/webtable1.html
 
@@ -416,7 +450,7 @@ Target: https://awesomeqa.com/webtable1.html
 
 - **Verify Webtable 1 Example**
 
-### `tests/07_WebTables/249_TestCase.spec.ts`
+### `tests/07_WebTables/249_FollowingSibling.spec.ts`
 
 Target: https://awesomeqa.com/webtable.html
 
@@ -424,9 +458,37 @@ Target: https://awesomeqa.com/webtable.html
 
 - **Verify Web Table Example 1**
 
-### `tests/07_WebTables/250_TestCase.spec.ts`
+### `tests/07_WebTables/250_FilterMethod.spec.ts`
 
-_No top-level `test(...)` blocks found in this file._
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+1 test case(s):
+
+- **Verify the TestCase**
+
+### `tests/07_WebTables/251_PrecedingSibling.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/webtable
+
+1 test case(s):
+
+- **Search a User from the Web Table**
+
+### `tests/07_WebTables/252_WebTablePagination.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/tables/webtable
+
+1 test case(s):
+
+- **Verify Name&EmailId from WebTable with Pagination**
+
+### `tests/07_WebTables/253_WebTablePaginationAsyncFntn.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/tables/webtable
+
+1 test case(s):
+
+- **Verify the TestCase**
 
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
@@ -436,7 +498,11 @@ Target: https://katalon-demo-cura.herokuapp.com/
 
 - **Navigate to CURA Health Services and CLick on Make Appointment**
 
-> **Warning:** line 19 hard-codes the literal `ThisIsNotAPassword` in a `fill()` call. Move credentials to environment variables before this repository is shared.
+### `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts`
+
+Target: https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
+
+_No top-level `test(...)` blocks found in this file._
 
 ### `tests/example.spec.ts`
 

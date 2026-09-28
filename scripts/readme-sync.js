@@ -183,6 +183,13 @@ function buildTree() {
   return lines.join('\n');
 }
 
+function maskSecret(value) {
+  const trimmed = value.trim();
+  if (trimmed.length === 0) return 'an empty value';
+  if (trimmed.length <= 2) return '***';
+  return trimmed.charAt(0) + '*'.repeat(trimmed.length - 2) + trimmed.charAt(trimmed.length - 1);
+}
+
 function buildSpecSection(spec) {
   const lines = ['### ' + '`' + spec.file + '`', ''];
 
@@ -200,9 +207,9 @@ function buildSpecSection(spec) {
     lines.push(
       '> **Warning:** line ' +
         secret.line +
-        ' hard-codes the literal `' +
-        secret.value +
-        '` in a `fill()` call. Move credentials to environment variables before this repository is shared.',
+        ' passes a hard-coded literal to `fill()`. The value is masked here (' +
+        maskSecret(secret.value) +
+        ') and is never written to this file in full. Move it to an environment variable before sharing this repository.',
       ''
     );
   }

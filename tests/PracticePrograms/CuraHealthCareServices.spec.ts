@@ -15,8 +15,8 @@ test('Navigate to CURA Health Services and CLick on Make Appointment', async ({ 
     let userNameField = page.locator('#txt-username');
     let passwordField = page.locator('#txt-password');
     let loginButton = page.locator('#btn-login')
-    await userNameField.fill('John Doe');
-    await passwordField.fill('ThisIsNotAPassword');
+    await userNameField.fill(process.env.CURA_USER!);
+    await passwordField.fill(process.env.CURA_PASS!);
     await loginButton.click();
 
     let expMessage = page.locator('#btn-make-appointment');
