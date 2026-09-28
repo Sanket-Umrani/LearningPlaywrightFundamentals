@@ -1,0 +1,6 @@
+{
+  "runId": "20260928_075345",
+  "tests": {
+    "chromium › 06_Multiple_Element_Filter\\246_MultipleElement.spec.ts › Basic Verify how to handle multiple elements": "failed"
+  }
+}

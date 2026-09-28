@@ -29,18 +29,34 @@ LearningPlaywrightFundamentals/
 ├── allure-results/
 │   ├── 00772f07-9409-44cc-b9a8-60cb2f7b446c-result.json
 │   ├── 0865df30-b653-4b6b-888e-fb9f46776373-result.json
+│   ├── 13b84345-799e-4fd4-a136-501fe217da97-attachment.txt
 │   ├── 140fc1a0-f667-446e-8276-d6dfb909432d-result.json
+│   ├── 141a5b5c-c90c-4b50-ad1f-0c9887577816-result.json
 │   ├── 17a1bb8b-2a24-463a-8734-f1e0eeabbdd1-result.json
 │   ├── 1d21e7dd-6ba9-4595-b40e-b33334d1ffb8-result.json
 │   ├── 28611b04-c7b6-4bbc-8ab8-bd470e2f10a2-result.json
+│   ├── 2b4c2268-ff8b-47c7-8be3-74430ceabb78-attachment.txt
 │   ├── 2ec6f6bd-d5a3-4aae-a099-eb892965be3e-result.json
+│   ├── 2f3de3f6-b625-4629-8dc7-d09fcd826fa4-attachment.txt
+│   ├── 32129a4b-6b59-44a1-9239-96936f548b3a-result.json
 │   ├── 322131ea-6fca-435d-9ce2-76a3045acbff-result.json
+│   ├── 39f974b2-d61f-41be-aeb5-2b9430a71d04-attachment.txt
+│   ├── 3b42b078-6e91-464c-b35a-32b1905dc748-attachment.txt
 │   ├── 3da9edbf-7fec-4b15-adfd-0fe6ea4de37c-result.json
+│   ├── 3ea4656d-88a6-4b3c-beb9-d5954e34bdf3-result.json
 │   ├── 46f8449b-e92d-474e-8e9e-996034fc2c8c-result.json
 │   ├── 475284d5-690d-4674-b5bc-ea900dfde2c2-result.json
+│   ├── 49f1c111-8857-4a86-95d6-ee5433aa5fa2-result.json
 │   ├── 4d4b5790-7305-4692-ac90-c71b4903322f-result.json
+│   ├── 4ff019c0-0f8d-4227-b865-7148376d92c5-attachment.txt
+│   ├── 4ff64b21-c73b-498a-9f5b-545e80cdd9ec-attachment.txt
 │   ├── 515b8fc9-9d78-4b90-a2b0-ce73a3828e98-result.json
+│   ├── 51d765bb-31ea-4160-870a-a8383f2225e2-attachment.txt
 │   ├── 53aa276a-cbac-449c-9fb0-14f7f622da36-attachment.txt
+│   ├── 5570346d-3958-4185-834d-c3d8120b93be-result.json
+│   ├── 56cb404d-5a8f-4b53-ad5f-1585731e8318-result.json
+│   ├── 571de462-c58f-49b6-9a15-da78afb7e1fb-result.json
+│   ├── 57f5ada5-8295-48c7-a466-4831671901df-attachment.txt
 │   ├── 585257a8-3fc3-40db-8169-e69c9109a48c-result.json
 │   ├── 585a3bbe-5427-4ade-9324-1ea25513fbf9-result.json
 │   ├── 58d97f8b-1bb4-41a0-8777-c65872841f5a-result.json
@@ -52,40 +68,68 @@ LearningPlaywrightFundamentals/
 │   ├── 6d6f483f-004f-4df0-9744-2a409a1531f7-result.json
 │   ├── 6e60ca35-8b33-42d6-90e5-81b9bd3ab42b-attachment.txt
 │   ├── 6fbc8ddb-595f-4ca5-9018-302ee18030d3-result.json
+│   ├── 73a59e1d-a273-4cc9-a887-bd77c6965d71-attachment.md
+│   ├── 74816ef7-c4c6-4934-ac17-5aac4db26b61-attachment.txt
 │   ├── 75c7434c-4ce2-46e9-b346-f901b38f9991-result.json
+│   ├── 79b21379-4edc-43a4-bdb4-e8d5e85880e5-attachment.txt
 │   ├── 7d07cabf-d788-4daf-a89c-b94fb4d5f65d-attachment.txt
 │   ├── 816d8e85-a56f-4585-bf86-1326ee418c70-result.json
+│   ├── 86445dbb-7067-42fe-8d8d-3c1e2380303a-attachment.txt
 │   ├── 8d020ff2-3e98-46fe-be95-2648ce352cb3-result.json
 │   ├── 8dade226-11e2-46a9-9c03-d96eecf2f8e9-result.json
+│   ├── 8dea496d-2e77-418a-83cf-ed7962c3abd9-result.json
 │   ├── 8f0a2536-2d89-4bee-87d6-7dc9082e70de-result.json
+│   ├── 9127255e-1e50-406f-b45e-0f5338da6c7b-result.json
 │   ├── 9155381d-a66b-4c92-b8ea-34b45d829ec0-result.json
+│   ├── 91648a98-c965-4856-b684-bd1d03341fd2-result.json
 │   ├── 98f4a67c-f9c0-4ac4-b45a-c9c10952ab5d-result.json
+│   ├── a2766383-1644-49f8-9b40-4421408de4ef-result.json
 │   ├── a37a3c93-ab4f-4409-b297-0a9979fa38ff-attachment.md
+│   ├── a4d3f256-eb55-4143-bdb1-0abdeb87527a-attachment.txt
+│   ├── a734d745-df92-4a96-a5e7-7be36a3e554e-attachment.txt
+│   ├── a8ce3372-90ad-4075-8c3e-c6200ef3a34e-result.json
+│   ├── abed6804-b1f8-4f5a-b3c5-4e2be14b6627-result.json
 │   ├── acefe2d2-cb72-49d7-9518-92f7925b171c-attachment.png
+│   ├── ae476854-4282-438b-8512-ffd8d7ff4d8d-attachment.txt
+│   ├── ae6f10e4-a359-4d92-924b-193058d86b0f-result.json
 │   ├── b291abcf-e730-425f-a6d6-97aa8b2d2f70-attachment.png
+│   ├── b2d30ba1-fe8a-4503-bbfc-ef49b6784b95-attachment.txt
 │   ├── b3faadbf-036b-49e0-a726-c817f078f92d-result.json
+│   ├── b4885e9f-ed5f-48b8-9b36-cc30fa2c1343-attachment.md
+│   ├── b5288149-0485-4287-a05b-4c88d4c03d64-result.json
 │   ├── b9b4a8c4-6e40-446e-aca1-71f0f011afd0-result.json
 │   ├── b9c9eb00-bf97-4d15-a03e-d32218639de2-result.json
 │   ├── baf3457d-4281-4a5e-bf59-1922d7816ab4-attachment.md
 │   ├── bcf7ce93-d09a-4c9b-81b0-7007f86f2419-result.json
 │   ├── be74c249-4947-40d3-94d4-d2f08fb43a7d-result.json
 │   ├── beb26b7f-9dcc-4648-9be5-9cac04fe0fb6-result.json
+│   ├── bf349f8e-999f-4b9f-8e2d-80039f675d2f-attachment.txt
 │   ├── c020cbe2-810d-46df-ad10-356e9daea40f-attachment.zip
+│   ├── c05f3582-3b41-410f-9608-1f60e9595dab-attachment.txt
 │   ├── c3afe77a-7685-4fd7-acf1-319b7e2eef70-result.json
+│   ├── c4939cc6-5dda-4c9f-955e-4aeb5140debc-attachment.txt
+│   ├── c55e67f0-c0bf-4b74-8ad6-e740acf8ae6e-attachment.txt
 │   ├── c6b20e7c-5f50-444c-852a-5086e7462a88-attachment.md
 │   ├── cbe8d8c7-1035-49b3-adf6-322603224724-attachment.txt
 │   ├── d0261469-0249-4f10-a817-757cf9112471-result.json
+│   ├── d106c5db-f129-4d3c-9980-ff5f20f1cb7e-result.json
 │   ├── d142d928-ca9b-43ee-b190-0c5fb3636042-result.json
 │   ├── d217cbde-5750-4546-b7df-c1fb6bdb7c25-result.json
 │   ├── d26df4a6-5f68-4673-90e8-8132e171430b-result.json
 │   ├── d2fe3438-cec9-4e5d-8f63-531b2a9f2324-result.json
+│   ├── d4a8fa54-71e2-48a3-a825-fdcd19f12273-result.json
 │   ├── d7128d75-c4a7-4b7d-a7c8-4d258e283d4d-result.json
 │   ├── ddf7a1dd-46c3-4913-8705-146be58a59ce-attachment.md
 │   ├── e0a8ada4-ea91-4451-bcbc-0ab16fe59c02-result.json
 │   ├── e9984ffb-6fb4-461e-99dc-b9ea17ee1cb3-result.json
+│   ├── ea062cce-b65b-4fc1-af60-2077f61f32d9-result.json
+│   ├── ef2994e3-f5e7-4e07-a626-a600e616811e-result.json
 │   ├── effa0771-aba7-4422-9c56-b3ed35177319-attachment.txt
+│   ├── f092e23b-b3d9-48d7-8c9e-e00e5939f962-result.json
 │   ├── f41b246d-ca03-471a-89dd-c53b3cb70b9c-attachment.webm
-│   └── f80e5622-fe7b-4a9f-8474-9a7d66f0b9d2-result.json
+│   ├── f80e5622-fe7b-4a9f-8474-9a7d66f0b9d2-result.json
+│   ├── fbc461ea-783a-4207-ae05-9d83a776e794-result.json
+│   └── fbed5c4d-baa1-432b-bc57-9c0122d18071-attachment.txt
 ├── Concept_Understanding/
 │   ├── Codegen.md
 │   ├── ConceptAnalysis.md
@@ -103,9 +147,10 @@ LearningPlaywrightFundamentals/
 │   ├── 03_Locator_Commands/
 │   ├── 04_SessionStorage/
 │   ├── 05_Allure&CustomReports/
+│   ├── 06_Multiple_Element_Filter/
+│   ├── 07_WebTables/
 │   ├── 22_Misc_AI_concepts/
 │   ├── 23_Advance_Playwright_Framework/
-│   ├── Concept_Understanding/
 │   ├── example.spec.ts
 │   └── PracticePrograms/
 ├── tta-report/
@@ -114,6 +159,27 @@ LearningPlaywrightFundamentals/
 │   ├── report_20260925_191453.html
 │   ├── report_20260925_191805.html
 │   ├── report_20260925_193343.html
+│   ├── report_20260928_073232.html
+│   ├── report_20260928_073514.html
+│   ├── report_20260928_073909.html
+│   ├── report_20260928_074010.html
+│   ├── report_20260928_074150.html
+│   ├── report_20260928_075345.html
+│   ├── report_20260928_075624.html
+│   ├── report_20260928_075808.html
+│   ├── report_20260928_081226.html
+│   ├── report_20260928_081357.html
+│   ├── report_20260928_081501.html
+│   ├── report_20260928_082325.html
+│   ├── report_20260928_082538.html
+│   ├── report_20260928_105937.html
+│   ├── report_20260928_112237.html
+│   ├── report_20260928_112642.html
+│   ├── report_20260928_115446.html
+│   ├── report_20260928_120958.html
+│   ├── report_20260928_121206.html
+│   ├── report_20260928_121317.html
+│   ├── report_20260928_121411.html
 │   ├── screenshots/
 │   ├── traces/
 │   └── videos/
@@ -317,6 +383,50 @@ Target: https://app.wingify.com/#/dashboard?accountId=1281646
 1 test case(s):
 
 - **capture dashboard screenshot, video, and trace**
+
+### `tests/06_Multiple_Element_Filter/246_MultipleElement.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+1 test case(s):
+
+- **Basic Verify how to handle multiple elements**
+
+### `tests/06_Multiple_Element_Filter/247_MultipleElement.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+1 test case(s):
+
+- **Basic Verify how to handle multiple elements**
+
+### `tests/07_WebTables/247_WebTables.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/webtable
+
+1 test case(s):
+
+- **Verify the TestCase**
+
+### `tests/07_WebTables/248_TestCase.spec.ts`
+
+Target: https://awesomeqa.com/webtable1.html
+
+1 test case(s):
+
+- **Verify Webtable 1 Example**
+
+### `tests/07_WebTables/249_TestCase.spec.ts`
+
+Target: https://awesomeqa.com/webtable.html
+
+1 test case(s):
+
+- **Verify Web Table Example 1**
+
+### `tests/07_WebTables/250_TestCase.spec.ts`
+
+_No top-level `test(...)` blocks found in this file._
 
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
