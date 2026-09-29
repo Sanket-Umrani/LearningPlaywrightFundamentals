@@ -2,397 +2,542 @@
 
 > A beginner-friendly analysis of the concepts represented by the current repository changes.
 
-Generated: 2026-09-28.
+Generated: 2026-09-29.
 
 ## Analyzed files
 
+- `playwright.config.ts` — M
 - `README.md` — M
-- `tests/07_WebTables/248_UsingNthof(i).spec.ts` — new
-- `tests/07_WebTables/249_FollowingSibling.spec.ts` — new
-- `tests/07_WebTables/250_FilterMethod.spec.ts` — new
-- `tests/07_WebTables/251_PrecedingSibling.spec.ts` — new
-- `tests/07_WebTables/252_WebTablePagination.spec.ts` — new
-- `tests/07_WebTables/253_WebTablePaginationAsyncFntn.spec.ts` — new
-- `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts` — new (fully commented out)
-
-All seven new specs live in `tests/07_WebTables/` (six) and `tests/PracticePrograms/` (one), which continues an existing numbered-file convention in this learning repository.
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts` — ?? (new)
+- `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts` — ?? (new)
 
 ## Skipped files
 
-The following changed paths were excluded from analysis as generated, private, or backup artifacts rather than source: `.commandcode/taste/**` (agent-preference state), `reports/runs/run-*.json` (run records), `tta-report/**` (generated HTML reports), and `allure-results/` (Allure output). The three deleted files `tests/07_WebTables/248_TestCase.spec.ts`, `249_TestCase.spec.ts`, and `250_TestCase.spec.ts` were replaced by the concept-named specs analyzed below.
+- `.commandcode/taste/taste/taste.md` — excluded generated, private, or backup path
+- `reports/runs/run-20260929_184457.json` — excluded generated, private, or backup path
+- `reports/runs/run-20260929_231633.json` — excluded generated, private, or backup path
+- `reports/runs/run-20260929_231816.json` — excluded generated, private, or backup path
+- `reports/runs/run-20260929_231911.json` — excluded generated, private, or backup path
+- `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts` — deleted in the working tree
+- `tta-report/history.html` — excluded generated, private, or backup path
+- `tta-report/index.html` — excluded generated, private, or backup path
+- `tta-report/report_20260929_184457.html` — excluded generated, private, or backup path
+- `tta-report/report_20260929_231633.html` — excluded generated, private, or backup path
+- `tta-report/report_20260929_231816.html` — excluded generated, private, or backup path
+- `tta-report/report_20260929_231911.html` — excluded generated, private, or backup path
 
-### Positional Locator Iteration with `nth()`
+## How to read this document
+
+- **Demonstrated** means the behaviour is visible in the four analyzed files above.
+- **Inferred / not demonstrated** means the change implies something the snapshots do not prove — usually because the rest of the repository was not analyzed (for example, a shared setup file, or a test runner that the snapshots do not show).
+- The **Selenium or alternative approach** sections are generic teaching comparisons. No Selenium code appears in the analyzed files, so those sections describe the conventional equivalent rather than anything present in this repository.
+- No credential values, session data, or other secrets are reproduced below; only environment variable *names* are referenced.
+
+---
+
+### Locator strategy hierarchy: user-facing vs. CSS vs. XPath
 
 #### What it is (beginner version)
-A locator in Playwright points at *zero, one, or many* elements. When it points at many, you can ask how many there are with `count()`, or grab a specific one by position with `nth(i)`. The first element is index `0`, the second is `1`, and so on. `allInnerTexts()` then reads the visible text of every sub-element at once instead of looping with a `for` over individual reads.
+A locator is the address of an element on a page. Playwright offers three families: **user-facing** locators that match what a human can see or read (`getByRole`, `getByPlaceholder`, `getByText`), **CSS** selectors (`[role="button"]`, `button[type="submit"]`), and **XPath** expressions (`//div[@class="RG5Slk"]`).
 
 #### Why do testers care?
-Reading a web table cell-by-cell is a bread-and-butter task. Doing it with `nth()` in a loop teaches you the mental model that drives everything else: a locator is a *list*, not a single handle, and Playwright gives you a safe way to address individual items in that list.
+Locator choice decides how fragile a test is. User-facing locators survive CSS class renames; obfuscated class names do not. Mixing all three styles in one test is the single most common source of "worked yesterday" failures.
 
 #### Repository implementation
-`tests/07_WebTables/248_UsingNthof(i).spec.ts` locates the body rows of a summary-identified table, counts them, then walks each row:
+The two new specs use all three families, sometimes within a single flow:
 
 ```ts
-const rows = page.locator('table[summary="Sample Table"] tbody tr');
-const rowCount = await rows.count();
-for (let i = 0; i <= rowCount - 1; i++) {
-  const rowsData = await rows.nth(i).locator('td').allInnerTexts();
-  console.log(`Row ${i + 1}:`, rowsData);
+// user-facing (OrangeHRM)
+await page.getByPlaceholder('Type for hints...').first().fill('STRIKE EAGLES');
+// CSS (both specs)
+await page.locator('button[type="submit"]').click();
+// XPath (both specs)
+const items = page.locator('//div[@class="RG5Slk"]');
+```
+
+A notable beginner trap appears in the Flipkart spec: `//div[@class="RG5Slk"]` uses `[@class="X"]`, which matches only when the attribute is *exactly* `X`. If the site renders `class="RG5Slk extra"`, the XPath matches nothing, while the CSS selector `.RG5Slk` would still match.
+
+#### Playwright usage
+`page.locator()` accepts CSS, XPath (with `//` or `..` prefixes), and text-engine selectors, so it is a single entry point for all three. `getBy*` methods are thin, intention-revealing wrappers that internally use accessible name, role, placeholder, and visible text.
+
+#### Selenium or alternative approach
+Selenium typically selects one engine per call: `By.cssSelector("button[type='submit']")`, `By.xpath("//div[@class='RG5Slk']")`, `By.id(...)`, or `By.name(...)`. Matching by placeholder or button text normally requires XPath or CSS attribute hacks, which is why Selenium code leans on XPath more heavily.
+
+#### Comparison
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| One API for all engines | `page.locator()` accepts CSS + XPath | Separate `By.*` constants |
+| Match by visible text | `getByText('Successfully Deleted')` | XPath `//*[text()=...]` or link/partial-link helpers |
+| Match by placeholder | `getByPlaceholder(...)` | No dedicated API |
+| Match by role + name | `getByRole('button', { name: ' Search ' })` | XPath or custom page-object helpers |
+
+#### Interview-ready answer
+"Playwright exposes one locator API that accepts CSS, XPath and its own text engine, plus user-facing locators like `getByRole` and `getByPlaceholder` that use accessibility information instead of implementation details. Selenium uses `By.*` constants, so matching by placeholder or accessible role usually means hand-written XPath. I'd prefer `getByRole`/`getByPlaceholder` for UI-facing locators and reserve XPath for cases where no semantic hook exists — and I would avoid `[@class='X']` style XPath because it breaks the moment the site appends another class."
+
+#### Related files
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
+- `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
+
+---
+
+### Chained and filtered locators: scoping actions to a single row
+
+#### What it is (beginner version)
+Instead of locating a checkbox "somewhere on the page", you first locate the table row that matches a condition, then search *within that row* for the control. The filter step is the condition; the chain is the scoping.
+
+#### Why do testers care?
+Web tables render the same control once per row. Without scoping, a single click can silently hit the wrong record or trigger Playwright's strict-mode error. Filtering is how a test says "the record named X" instead of "the third checkbox".
+
+#### Repository implementation
+The OrangeHRM spec builds the target row and then scopes both the select and the delete action to it:
+
+```ts
+const row = page.locator('[role="row"]').filter({ hasText: name });
+await row.locator('.oxd-checkbox-wrapper').click();
+await row.locator('button:has(i.bi-trash)').click();
+```
+
+The commented-out line at the bottom of the same file shows the alternative the author was migrating away from — a page-wide icon locator:
+
+```ts
+// await page.locator('.oxd-icon bi-trash').click();
+```
+
+#### Playwright usage
+`locator.filter({ hasText })` keeps the matching elements that *contain* the given text; chaining `row.locator(...)` searches descendants of each surviving row. The CSS `:has()` pseudo-class in `button:has(i.bi-trash)` expresses "a button that contains a trash icon element" directly in the selector, which is a distinct mechanism from `filter`.
+
+#### Selenium or alternative approach
+Selenium has no `filter()` shorthand. The common pattern is to find all rows (`findElements(By.cssSelector("[role='row']"))`), loop in Java to find the row whose `getText()` contains the name, then call `row.findElement(By.cssSelector(".oxd-checkbox-wrapper"))`. The `:has()` CSS expression is CSS Selectors Level 4, so browser support matters more than it does in Playwright.
+
+#### Comparison
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| Filter rows by content | `.filter({ hasText: name })` | Manual loop over `findElements` comparing `getText()` |
+| Scope a nested lookup | `row.locator('.oxd-checkbox-wrapper')` | `row.findElement(By.cssSelector(...))` |
+| "Button containing an icon" | `button:has(i.bi-trash)` | XPath `//button[.//i[contains(@class,'bi-trash')]]` |
+
+#### Interview-ready answer
+"When a page repeats the same control per record, I never click a page-wide control. I locate the record row, filter it by its identifying text with `filter({ hasText })`, and then chain the row locator for the checkbox and the delete button. In Selenium the equivalent is finding the row element first and calling `findElement` on it, because `findElements(...).get(0)` would otherwise act on whichever element the DOM happens to return first."
+
+#### Related files
+- `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
+
+---
+
+### Collection iteration and index-based data extraction
+
+#### What it is (beginner version)
+A web table or product grid is a collection of repeated elements. To read it, you ask how many elements match, then walk the collection one item at a time and read each item's text.
+
+#### Why do testers care?
+Real applications rarely expose data through an API in a test context; reading the rendered rows is how you verify a listing, a search result, or a price column. Getting the iteration pattern right is the difference between reading a table and reading the wrong table.
+
+#### Repository implementation
+The Flipkart spec reads two parallel lists — product names and prices — and prints them together:
+
+```ts
+const items = page.locator('//div[@class="RG5Slk"]');
+const price = page.locator('//div[@class="hZ3P6w DeU9vF"]');
+const count = await items.count();
+for (let i = 0; i < await items.count(); i++) {
+    const nameLocator = await items.nth(i).innerText();
+    const priceLocator = await price.nth(i).innerText();
+    console.log(`${nameLocator} --> ${priceLocator}`);
 }
 ```
 
-Note the deliberate off-by-one comment: the loop uses `i <= rowCount - 1` because indexing starts at zero. One inaccuracy worth flagging — the inline comment claims `nth(i)` "gives first `<tr>` element", but the code indexes into the *i*-th row. The comment is wrong, the code is right.
+`count` is declared but never used; the loop condition re-queries the DOM on every iteration, so the collection is resolved repeatedly instead of once.
 
 #### Playwright usage
-`page.locator(cssOrXPath)` → `.count()` → `.nth(i)` → `.locator('td')` → `.allInnerTexts()`. No explicit wait is needed anywhere: locator methods auto-wait for the element to appear before resolving.
+`locator.count()` returns a number without throwing on zero matches; `locator.nth(i)` returns a *locator* for the i-th match, so the index is resolved at action time rather than captured up front. `innerText()` returns rendered, visible text, which differs from `textContent` in being closer to what a user actually sees.
 
 #### Selenium or alternative approach
-In Selenium the equivalent is `driver.find_elements(By.CSS_SELECTOR, ...)` returning a Python/JS list, then `rows[i].find_elements(By.TAG_NAME, "td")`, then `[c.text for c in cells]`. You manage waiting yourself, usually with `WebDriverWait(...).until(...)`, and you index the raw list yourself.
+Selenium returns real elements eagerly: `List<WebElement> rows = driver.findElements(By.xpath(...))`, then `for (int i = 0; i < rows.size(); i++)` and `rows.get(i).getText()`. The loop bound is captured once, so Selenium's version does not re-query the DOM per iteration.
 
 #### Comparison
-Playwright's `locator` is a *lazy query* — nothing is fetched until you call a terminal method like `count()` or `innerText()`. Selenium's `find_elements` fetches immediately and returns a snapshot. This means a Playwright locator written once stays valid as the page changes underneath it, while a Selenium element reference can go stale and raise `StaleElementReferenceException`. The trade-off: Playwright's laziness costs a small extra indirection cost, and `count()` is a real round-trip to the browser, not a cached property.
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| Match count | `await loc.count()` | `findElements(...).size()` |
+| i-th match | `loc.nth(i)` | `list.get(i)` |
+| Read visible text | `await loc.innerText()` | `element.getText()` |
+| Re-query behaviour | Lazy — re-resolves at each call | Eager — elements captured at find time |
 
 #### Interview-ready answer
-"`page.locator()` returns a Locator that may match many elements. I call `count()` to learn the size and `nth(i)` to address one element by zero-based index, then chain a child locator to scope to cells and call `allInnerTexts()` to read them. The big difference from Selenium is that the Locator is a lazy query re-evaluated at each use, so it auto-waits and doesn't go stale. The classic beginner trap is forgetting that `nth()` is zero-based, which is exactly what the loop bound `i <= rowCount - 1` compensates for."
+"In Playwright, `locator.nth(i)` returns a lazy locator, so I fetch `count()` once into a variable and use that value as the loop bound — otherwise the DOM is re-queried on every iteration and the two lists can drift out of step. I also pair name and price by index only after confirming both collections have the same size; index pairing is safe for static grids but breaks on virtualised or lazily-loaded listings, where a `filter({ has })` relationship between the name cell and its sibling price cell is more reliable."
 
 #### Related files
-- `tests/07_WebTables/248_UsingNthof(i).spec.ts`
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
 
-### Dynamically Constructed XPath and Axis Navigation
+---
 
-#### What it is (beginner version)
-XPath is a language for describing a location in an XML/HTML document. Two things in this file are advanced: (1) building the XPath *as a text string* at runtime from parts, so you can point at row 5, column 2 without hard-coding it, and (2) *axes*, which navigate sideways through a document — `following-sibling::td` means "the `td` elements that come after this one under the same parent."
-
-#### Why do testers care?
-Tables are regular grids, so nested loops over row and column indices is the natural algorithm. Dynamic XPath is how you turn "the cell at position (i, j)" into a query. Sibling axes let you answer "what is next to this?" without counting columns again — a common real-world requirement like "find the row where the name is X and tell me the country."
-
-#### Repository implementation
-`tests/07_WebTables/249_FollowingSibling.spec.ts` splits the XPath into three fragments and reassembles it per iteration:
-
-```ts
-const firstPart = '//table[@id="customers"]/tbody/tr[';
-const secondPart = ']/td[';
-const thirdPart = ']';
-// ...
-const dynamicXpath = `${firstPart}${i}${secondPart}${j}${thirdPart}`;
-```
-
-The outer loop starts at `i = 2` to skip the header row; `cols` is measured from a specific row (`tr[2]/td`). When a cell's text contains a known name, it appends the axis:
-
-```ts
-const countryPath = `${dynamicXpath}/following-sibling::td`;
-const countryText = await page.locator(countryPath).innerText();
-```
-
-#### Playwright usage
-`page.locator('//...')` accepts XPath directly — Playwright detects the `//` prefix and switches engines. `.innerText()` retrieves the visible text. The XPath itself is standard XPath 1.0 and is not Playwright-specific.
-
-#### Selenium or alternative approach
-Selenium takes XPath as a string too: `driver.find_element(By.XPATH, dynamic_xpath)`. The axis syntax is identical, since it's an XPath feature. Selenium's relative-locator feature (`element.find_elements(By.XPATH, "./following-sibling::td")`) is a more idiomatic alternative to building an absolute path with a suffix.
-
-#### Comparison
-Dynamic XPath is fully portable — the same string works in Selenium, Cypress, and most XPath libraries. The trade-off is that it is opaque and fragile: nothing in the assembled string shows you that `i` and `j` are variables, and a small arithmetic mistake produces a silently empty result rather than an error. In the same repository, `248_UsingNthof(i).spec.ts` solves the identical "read a whole table" problem with CSS + `nth()` and no string building at all. A hybrid is often best: use CSS/XPath `following-sibling` for the "find the neighbour" step, and relative addressing for traversal.
-
-#### Interview-ready answer
-"I build XPath from string fragments so I can address an arbitrary (row, column) cell, then append `following-sibling::td` to read the cell immediately to the right of a match. This is standard XPath 1.0 so it works identically in Selenium. The downside is readability and silent failures, so I'd prefer Playwright's `filter()` for narrowing by content and reserve dynamic XPath for positional access that CSS can't express."
-
-#### Related files
-- `tests/07_WebTables/249_FollowingSibling.spec.ts`
-- `tests/07_WebTables/248_UsingNthof(i).spec.ts` (contrast: CSS + `nth()` instead of built XPath)
-
-### Narrowing a Multi-Element Locator with `filter()`
+### Pagination traversal with a bounded loop
 
 #### What it is (beginner version)
-`filter()` is a method on a locator that takes a *set* of matched elements and returns a smaller locator containing only the ones you care about. The most useful option is `hasText`, which keeps elements whose text contains the given string. The result is still a locator — you keep the whole chain of Playwright methods on it.
+Paginated pages hide data behind a "Next" control. To read more than one page, the test loops: read the current page, click Next, increment a counter, and stop at a fixed limit.
 
 #### Why do testers care?
-Selecting "the footer link that says Privacy Policy" or "the table row that mentions Luca Greco" is a *content* question, not a position question. `filter()` expresses that directly and, crucially, keeps the result auto-waiting and re-evaluating.
+A test that only reads page 1 proves very little. Traversing pagination exercises navigation state and reveals whether the grid is stable across pages — but an unbounded loop will hang the suite forever, so the bound is part of the design, not an afterthought.
 
 #### Repository implementation
-The pattern appears in three different shapes across the new specs. Narrowing a broad selector by text, then asserting on it:
+The Flipkart spec walks up to five pages, then breaks before clicking again:
 
 ```ts
-const privacyLink = page.locator('footer a')
-  .filter({ hasText: 'Privacy Policy' });
-await expect(privacyLink).toHaveAttribute('href', '#privacy-policy');
-```
-
-Narrowing a container by text, then descending to a child (`251`):
-
-```ts
-await page.locator(".orangehrm-paper-container").filter({ hasText: ' Add ' }).click();
-```
-
-Narrowing table rows by content, then reading specific columns by attribute (`252`, `253`):
-
-```ts
-const row = page.locator('#employees-table tbody tr').filter({ hasText: name });
-const email = await row.locator('td[data-col="email"]').innerText();
-```
-
-`filter({ has: ... })` — filtering by the presence of a descendant — also appears in intent, expressed as `.locator('input').first()` in `251`, though the snapshot does not use the `has` option itself. I am not asserting which options the author prefers; only `hasText` is evidenced.
-
-#### Playwright usage
-`locator.filter({ hasText })` narrows an existing locator. Because the return value is a locator, it composes with `.locator()`, `.nth()`, `.first()`, `.count()`, and `expect()` without special handling. It also composes with chained filters, which is how you express "row containing X *and* containing Y."
-
-#### Selenium or alternative approach
-Selenium has no direct equivalent. The common pattern is to fetch all elements and filter in code — `rows = [r for r in driver.find_elements(By.CSS_SELECTOR, "tr") if "Luca" in r.text]` — or use a custom expected condition with `WebDriverWait`. The code-based filter is more readable but not re-evaluated automatically; you must re-query after the page changes.
-
-#### Comparison
-This is the most direct Playwright-vs-Selenium divergence in the whole changeset. Playwright's `filter()` is a *declarative* narrowing: the "which elements match" logic lives in the locator and is re-run on every access. Selenium's filtering is *imperative*: you get a static list once and filter it yourself. The consequence for a paginated table is significant — in `252` and `253`, the filtered locator is created *inside* a loop, so after a page change the same expression resolves against the new page. A Selenium list filter would need to be re-executed each iteration or it would silently test stale data. The cost: `filter()` hides its work inside an object, so debugging "why is this locator empty?" requires reading the whole chain.
-
-#### Interview-ready answer
-"`locator.filter({ hasText })` narrows a multi-element locator down to matching elements while keeping it lazy and re-evaluated. That auto-refresh matters most in pagination: I can define the row locator once, click Next, and the same locator automatically resolves against the new page. In Selenium I'd have to re-query and re-filter in a loop, and I'd risk operating on a stale element reference. The trade-off is that declarative chains are harder to debug than a plain list comprehension."
-
-#### Related files
-- `tests/07_WebTables/250_FilterMethod.spec.ts`
-- `tests/07_WebTables/251_PrecedingSibling.spec.ts`
-- `tests/07_WebTables/252_WebTablePagination.spec.ts`
-- `tests/07_WebTables/253_WebTablePaginationAsyncFntn.spec.ts`
-- `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts` (same pattern, commented out)
-
-### CSS Pseudo-Class Alternatives to XPath Axes
-
-#### What it is (beginner version)
-`251_PrecedingSibling.spec.ts` is a *before-and-after* lesson. The commented line is the XPath way of saying "the `input` that sits before the `td` containing this name." The live code is the Playwright-CSS way: `tr:has(td:text('Rohan.Mehta'))` selects the table row that *contains* a `td` with that text, then descends to the `input` inside it.
-
-#### Why do testers care?
-The two idioms express the same intent very differently. Seeing them side by side is how you learn which one a maintainer will actually reach for — and understanding that Playwright extends CSS means you are not limited to browser-native selector syntax.
-
-#### Repository implementation
-The commented-out XPath original and its live replacement:
-
-```ts
-// await page.locator('//td[text()="Rohan.Mehta"]/preceding-sibling::td/input').click();
-
-await page.locator("tr:has(td:text('Rohan.Mehta'))")
-  .locator('input')
-  .first()
-  .click();
-```
-
-The file's own comment says pseudo-classes are "mostly used in Advanced Framework," which is the author's framing, not a Playwright requirement.
-
-#### Playwright usage
-`page.locator("tr:has(td:text('...'))")` combines two Playwright CSS extensions: `:has()` (parent has a matching descendant) and `:text()` (match by text, substring rather than exact — unlike CSS's native `:has`, which is natively supported but takes a full selector, and unlike Playwright's strict text matching). `.locator('input').first()` disambiguates when the row contains more than one input.
-
-#### Selenium or alternative approach
-Selenium can use native CSS `:has()` only where the browser supports it, and offers no `:text()`. The Selenium equivalent is `//td[text()="Rohan.Mehta"]/preceding-sibling::td/input` (or the `..` parent traversal `//td[text()="Rohan.Mehta"]/../input`). Browsers do support `:has()` today, but not `:text()`, so the Selenium version genuinely needs XPath.
-
-#### Comparison
-XPath is more expressive (axes, `text()`, `contains()`, and predicates over arbitrary positions) and is the only option in Selenium. Playwright's CSS extensions are more readable for a "find the row, then find the control" workflow and compose naturally with `filter()`. The honest trade-off: XPath is slower on large documents because the engine is more general, and XPath errors are far less obvious — a typo yields an empty locator, not a syntax error. If you mix them freely, you should be consistent within a file, since the two syntaxes read very differently.
-
-#### Interview-ready answer
-"`251` is a deliberate teaching comparison. The commented XPath line uses `preceding-sibling::td/input`; the live code uses Playwright's CSS extensions `tr:has(td:text('...'))` and then `.locator('input').first()`. Both are Playwright-specific advantages over Selenium's native CSS: `:text()` has no CSS equivalent at all, and `:has()` avoids the 'find the cell, then walk backwards' mental model. I'd reach for `filter({ hasText })` in a real framework because it's easier to read than either, but knowing the axis form is essential for reading legacy Selenium suites."
-
-#### Related files
-- `tests/07_WebTables/251_PrecedingSibling.spec.ts`
-- `tests/07_WebTables/249_FollowingSibling.spec.ts` (same axis family, used live)
-
-### Paginated Table Traversal with a Sentinel Failure
-
-#### What it is (beginner version)
-Some tables don't show all their data at once — they show a page of rows with a "Next" button. To find a row that might be on any page, you search the current page; if it isn't there, click Next and search again; keep going until you find it or the Next button is disabled (meaning you're on the last page). This is a search loop with a guaranteed exit condition.
-
-#### Why do testers care?
-A test that assumes data is on page 1 is fragile. Any table that outgrows one page is a real application, and the loop-with-sentinel is the standard way to make a test independent of how the data happens to be distributed. It's also a classic interview question because it tests whether you can write a loop that always terminates.
-
-#### Repository implementation
-`tests/07_WebTables/252_WebTablePagination.spec.ts` and `253_WebTablePaginationAsyncFntn.spec.ts` both hit `https://app.thetestingacademy.com/playwright/tables/webtable` and use the same algorithm — they are a deliberate two-step refactor of one idea:
-
-```ts
-while (true) {
-  const row = page.locator('#employees-table tbody tr').filter({ hasText: name });
-  if (await row.count()) { break; }
-
-  const next = page.getByTestId('next-page');
-  if (await next.isDisabled()) throw new Error("Row not found!");
-  await next.click();
+let pageNo = 1;
+while (pageNo <= 5) {
+    console.log(`\n===== PAGE ${pageNo} =====`);
+    // ... read rows ...
+    const nextBtn = page.locator('a').filter({ hasText: 'Next' });
+    await nextBtn.click();
+    if (pageNo === 5) { break; }
+    pageNo++;
 }
 ```
 
-Two observations from the snapshots that matter:
-
-1. **In `252`, the code after the `break` is unreachable.** The email/country extraction and `console.log` sit *inside* the `while` block but *after* the `if` that breaks out. `252` declares an outer `let row;` that the inner `const row` shadows, and the outer one is never used. So `252` searches correctly but prints nothing.
-2. **`253` fixes this by moving the search into a helper** that *returns* the locator, letting the extraction run in the test body where it belongs.
-
-The two files also use different table selectors — `#employees-table tbody tr` in `252` versus `#employees-tbody tr` in `253`. I cannot verify from the snapshots which matches the live page; that requires running against the site.
+The click happens *before* the break check, so the loop always performs a final "Next" click whose result is discarded. The new page is then not read before the loop condition is re-evaluated, and the spec closes with a fixed ten-second wait.
 
 #### Playwright usage
-- `page.getByTestId('next-page')` — targets an element by its `data-testid` attribute; the test-attribute convention is the most stable selector option.
-- `.isDisabled()` — checks the disabled state as a terminating condition.
-- `.count()` — the existence check (`if (await row.count())` treats a positive count as truthy).
-- A fresh `page.locator(...)` constructed inside the loop — this is what makes the pagination loop work, because the locator re-resolves against the newly loaded page.
+`page.locator('a').filter({ hasText: 'Next' })` narrows an anchor collection to the pagination control. The `console.log` page banner is a manual trace — useful in a learning project, but it produces no test result and no machine-readable output.
 
 #### Selenium or alternative approach
-The Selenium version is the same loop, but the row lookup returns a real list you must re-query each pass: `rows = driver.find_elements(...)`, check `if rows:`, then `driver.find_element(By.XPATH, "//button[@data-testid='next-page']")`, check `.is_enabled()` — note *is_enabled*, the Selenium counterpart to `isDisabled()` — and click. The critical difference is that Selenium's list is a snapshot; a stale element reference is the classic failure mode this loop is prone to.
+The Selenium equivalent loops identically over a page counter, finding the Next control with an XPath such as `//a[contains(normalize-space(), 'Next')]`. Because Selenium has no built-in pagination helper, teams usually wrap it in a page-object method (`goToNextPage()`) that also asserts the control is enabled before clicking.
 
 #### Comparison
-The sentinel (`throw` when the Next button is disabled) is the right call versus looping a fixed number of times: a fixed iteration count either wastes cycles on a short table or gives up early on a long one. What the current code does *not* yet have is a guard on the "found" path in `252` and a maximum-iteration backstop — worth noting the loop is safe today only because the sentinel is reliable. Playwright's advantage here is real and specific: because the locator is re-evaluated lazily, re-declaring it inside the loop is the *whole* fix for staleness. The Selenium equivalent requires either re-querying or explicit stale-element retry.
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| Find the Next control | `page.locator('a').filter({ hasText: 'Next' })` | `By.xpath("//a[contains(normalize-space(),'Next')]")` |
+| Assert it is clickable | Web-first assertion before click | `ExpectedConditions.elementToBeClickable` in a `WebDriverWait` |
+| Loop bound | Plain JS `while` / `for` | Same — pagination is app logic, not tool logic |
 
 #### Interview-ready answer
-"I write a search loop: filter rows by content, return if `count()` is non-zero, otherwise check whether the Next button is disabled and throw if so, else click and repeat. The disabled-button sentinel is better than a fixed iteration count because it adapts to table size. In Playwright I redeclare the locator inside the loop, which is correct precisely because locators are lazy and re-evaluate after the page changes. `252` and `253` are the same algorithm before and after extracting the loop into a helper — and `252` also has a real bug worth naming: the extraction code sits after the `break` and is unreachable."
+"I drive pagination with a plain bounded loop rather than an open-ended `while true`, because an unbounded loop on a flaky site is a suite-level hang. In Playwright I'd click Next, then assert the first row on the new page is visible before reading rows, which gives auto-retry instead of a fixed sleep. And I'd move the break check *before* the click so the loop doesn't navigate to a page it never reads."
 
 #### Related files
-- `tests/07_WebTables/252_WebTablePagination.spec.ts`
-- `tests/07_WebTables/253_WebTablePaginationAsyncFntn.spec.ts`
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
 
-### Extracting a Reusable Async Helper That Returns a Locator
+---
+
+### Assertions versus console harvesting: what makes a test a test
 
 #### What it is (beginner version)
-When the same search algorithm is needed in more than one test, you lift it out into a named `async` function above the `test(...)` block. The function takes inputs (the page, the name you're looking for), runs the loop, and *returns* something useful — here, the matching `Locator` — so the test body can then do whatever it wants with it.
+A test passes or fails based on *checks*. Logging data to the terminal is not a check. A spec with no assertions always passes as long as no step throws — so it proves the page did not crash, and nothing more.
 
 #### Why do testers care?
-This is the smallest meaningful step toward a page-object or helper layer. It's also where TypeScript starts earning its keep: type annotations on the parameter and the return value make the contract explicit, and a wrong call is caught before the test runs.
+A green suite is a promise. A test that cannot fail gives false confidence, and in CI it costs execution time while reporting nothing. Knowing the difference between "the script ran" and "the behaviour was verified" is the core testing judgement.
 
 #### Repository implementation
-`253_WebTablePaginationAsyncFntn.spec.ts` puts the helper at module scope, above the test:
+The two new specs sit at opposite ends of this scale.
+
+OrangeHRM makes exactly one real assertion — the delete confirmation:
 
 ```ts
-async function findRowByName(page: Page, name: string): Promise<Locator> {
-  while (true) {
-    const row = page.locator('#employees-tbody tr').filter({ hasText: name });
-    if (await row.count()) return row;
-    const next = page.getByTestId('next-page');
-    if (await next.isDisabled()) throw new Error(`Row not found: ${name}`);
-    await next.click();
-  }
-}
+await expect(page.getByText('Successfully Deleted')).toBeVisible();
 ```
 
-The test body becomes three readable lines, and the interpolation `` `Row not found: ${name}` `` replaces `252`'s static `"Row not found!"` — the failure message now names the row that was missing. The test also declares `let name: string = "Luca Greco";` and then passes the literal `'Luca Greco'` instead of using the variable, so the local is redundant; the helper's `name` parameter is what actually flows through.
-
-The declared return type is `Promise<Locator>`, but the function can also end by throwing, which is the implicit second exit. That's fine TypeScript, worth understanding: a `Promise<Locator>` function never resolves if it throws.
-
-#### Playwright usage
-The `Page` and `Locator` types are imported from `@playwright/test` and used purely as type annotations. No Playwright behaviour changes — the helper uses the same locator methods as the inline version. What changes is *where* the loop lives.
-
-#### Selenium or alternative approach
-Selenium helpers typically return a `WebElement` instead of a re-evaluating query. That difference is the whole point: a returned `WebElement` is a live reference to one node and can go stale on the next page change, whereas a returned `Locator` re-resolves every time you use it. Returning an element from a Selenium helper therefore constrains the caller, and returning a tuple of elements (e.g. the row and its cells) is a common and necessary workaround.
-
-#### Comparison
-Returning a `Locator` rather than a plain string or an extracted string is the most sophisticated choice in this changeset. A helper that returned `innerText()` would be simpler but would lose all flexibility — the caller could not click the row, count its cells, or re-filter it. Returning the locator preserves the full Playwright API for the caller at no extra cost. The trade-off is that the return type is less obvious at a glance than a string; a reader must know that a `Locator` is a query, not an element. As the file name suffix `AsyncFntn` suggests, the intent here is explicitly pedagogical about the `async` keyword.
-
-#### Interview-ready answer
-"I extract the pagination search into `async function findRowByName(page, name): Promise<Locator>`. The key decision is the return type: returning the `Locator` rather than a string or a `WebElement` means the caller still has the whole API — `innerText()`, `.locator()`, `.click()` — and the locator re-resolves lazily, so it can't go stale. In Selenium this would return a `WebElement`, which is a live reference that throws `StaleElementReferenceException` after the next click. The annotations on the parameters and return type are TypeScript making that contract explicit at compile time."
-
-#### Related files
-- `tests/07_WebTables/253_WebTablePaginationAsyncFntn.spec.ts`
-- `tests/07_WebTables/252_WebTablePagination.spec.ts` (the inline version being refactored)
-
-### Logging Instead of Asserting — a Deliberate Gap
-
-#### What it is (beginner version)
-An assertion *checks* something and fails the test if it's wrong. A `console.log` just prints and lets the test pass regardless. Most of the new specs print what they found but never verify it, so they demonstrate *navigation and extraction* without yet demonstrating *verification*.
-
-#### Why do testers care?
-This is the single most common flaw in learning-stage automation, and naming it is how you avoid it. A test that cannot fail is not a test — it's a script. Worth being precise: these specs are clearly scratchpads for building familiarity with locators, so logging is a reasonable intermediate step, but the next iteration has to add assertions.
-
-#### Repository implementation
-Across the seven new files, exactly one assertion exists — in `250_FilterMethod.spec.ts`:
+The Flipkart spec imports `expect` but never uses it:
 
 ```ts
-await expect(privacyLink).toHaveAttribute('href', '#privacy-policy');
+import { test, expect, Locator } from '@playwright/test'
+// ...only console.log statements, no expect(...) anywhere
 ```
 
-Everywhere else the pattern is `console.log`: `248` prints row counts and row data, `249` prints the country found via the sibling axis, `252` and `253` print email and country. Several files also import `expect` without using it (`248`, `251`, `252`), and `250` imports `Locator` unused — leftovers from iteration, not oversights worth copying.
+So the Flipkart test is best described as a *data-extraction script wrapped in a test file*: it prints product names and prices for five pages and asserts nothing about them.
 
 #### Playwright usage
-`expect(locator).toHaveAttribute(name, value)` is a web-first assertion: it retries until it passes or the timeout expires, so it handles async UI updates for you. The equivalent of "check the console output" would be `expect(email).toBe('...')` or `expect(row).toBeVisible()`.
+Playwright's `expect` is a web-first assertion: `await expect(locator).toBeVisible()` retries until it passes or the test times out, so it absorbs the race between an action completing and the DOM updating. Counts and values are asserted with the same style, for example `toHaveCount(n)` or `toContainText('...')`.
 
 #### Selenium or alternative approach
-Selenium has no built-in assertion library. You either use an external framework (JUnit's `Assert.assertEquals`, TestNG's `Assert`, or a BDD `expect` from a step-definition library), or you write your own `if`/`throw`. This is one of the areas where the framework choice costs you something, and it's why nearly every Selenium project pulls in a second dependency for assertions.
+Selenium uses the assertion library of the host language (`assertTrue`, `assertEquals`, TestNG/JUnit `assert*`) after an explicit wait. Because the wait is separate from the check, the classic failure mode is asserting on an element that was found but not yet rendered.
 
 #### Comparison
-Playwright bundles assertions into the test runner, so the marginal cost of adding one is a single line and no new dependency. The deeper difference is *retrying*: Playwright's `expect` polls until timeout, so it handles the race between an element appearing and its content settling without a separate wait. A hand-rolled Selenium `if (email != "x") throw` has no such retry and would need an explicit wait first. The trade-off is that Playwright's timeout-based retries can mask a genuine slow UI by passing a test that "would have failed" — an argument for keeping timeouts tight.
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| Sync point | Built into the assertion (auto-retry) | Explicit `WebDriverWait` + `ExpectedConditions` |
+| Result semantics | No assertion ⇒ pass, provided no step threw | Identical semantics; language assertion library |
+| Failure message | Playwright's own locator dump on timeout | Varies by library; needs custom reporting |
 
 #### Interview-ready answer
-"In this changeset only one of the seven new specs actually asserts; the rest log to the console, which is fine for learning locators but means the tests can't fail. In Playwright adding verification is `expect(locator).toHaveAttribute(...)` or `expect(value).toBe(...)` with no extra dependency, and those assertions auto-retry until timeout, which removes the race between element appearance and content settling. Selenium has no native assertions at all — every project adds JUnit, TestNG, or a BDD library and hand-manages the wait before comparing."
+"Playwright's `expect` is web-first, so it retries the lookup itself and I don't need a separate wait before asserting. A test with no assertions at all is a red flag: it runs the code but verifies nothing, so it can only ever fail on an exception. I'd either add real assertions on the extracted data — row counts, a known product name, non-empty prices — or reclassify the script as a scraper so it doesn't sit in the test suite pretending to be a test."
 
 #### Related files
-- `tests/07_WebTables/250_FilterMethod.spec.ts`
-- `tests/07_WebTables/248_UsingNthof(i).spec.ts`
-- `tests/07_WebTables/249_FollowingSibling.spec.ts`
-- `tests/07_WebTables/252_WebTablePagination.spec.ts`
-- `tests/07_WebTables/253_WebTablePaginationAsyncFntn.spec.ts`
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
+- `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
 
-### Debug-First Workflow: Pauses, Timeouts, and Commented Drafts
+---
 
-#### What it is (beginner version)
-When you're learning a new site, you often need to *look* at it. `page.pause()` opens the Playwright Inspector and freezes the test so you can step through it. `page.waitForTimeout(ms)` just sits still for a fixed number of milliseconds. A file where every line is commented out is a *draft* — an idea recorded but not yet runnable.
-
-#### Why do testers care?
-The instinct to pause and look is correct; the habit of leaving the pause in the committed test is not. The professional habit is to treat debugging aids as scaffolding: add them to learn, remove them to ship. Keeping this distinction visible is more useful than either the tool or the prohibition.
-
-#### Repository implementation
-`page.pause()` ends `249`, `250`, and `253`; `page.waitForTimeout(5000)` ends `251` and `252`; `249` also calls `page.pause()` at the very end of its traversal. `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts` is different in kind — its `import` line, `test()` declaration, and every locator, `fill()`, and `click()` are commented out, so the file contains no executable code. Its intended test title is visible in the comment: `Verify OrangeHRM Employee Add,Search From List,Delete`, covering login, navigation to PIM, adding an employee, searching, and deleting with a confirmation dialog.
-
-#### Playwright usage
-- `page.pause()` — opens the Inspector; primarily for interactive debugging, especially against `headless: false` runs.
-- `page.waitForTimeout(ms)` — a fixed delay. Playwright's own guidance is to prefer waiting on a *condition* (an assertion, or a locator operation that auto-waits) rather than a fixed duration, because a fixed sleep is either too short on a slow run or wasted time on a fast one.
-- Comments — plain `//`; there is no `.skip` or conditional-execution mechanism visible in the snapshots.
-
-#### Selenium or alternative approach
-Selenium has `time.sleep(n)` (Python) / `Thread.sleep(n)` (Java), which has the same fixed-delay weakness. The inspector equivalent is setting a breakpoint on a remote debugger. Selenium has no `pause()` counterpart — a common workaround is `input("Press enter to continue")`, which hangs indefinitely in a non-interactive CI run, which is a real hazard the Playwright equivalent avoids.
-
-#### Comparison
-The meaningful difference is *how a paused test behaves in automation*. `page.pause()` is designed to be inert or debug-only outside an interactive debugging session, whereas Selenium's `input()`-based pause blocks forever when nobody is there to press Enter. I want to be careful here: I have not run these specs, so I'm describing the intended design of each mechanism rather than asserting the exact CI behaviour of `page.pause()` in this repository's configuration. What is certain from the snapshots is simply that five of the six web-table specs end in a pause or a five-second sleep, and one file is entirely commented out.
-
-#### Interview-ready answer
-"`page.pause()` and `page.waitForTimeout()` are learning scaffolding. `page.pause()` opens the Inspector so you can step through a page you're still learning; a fixed `waitForTimeout` is what you reach for when you don't yet know what to wait on. Both should come out before commit — the right replacement is a condition, typically an `expect` assertion, since Playwright's assertions retry internally. The one I'd defend in review is `page.pause()` in a spec that's clearly a scratchpad, and the one I'd reject is a bare 5-second sleep guarding a real assertion. `OrangeHRM_WebTableFeatures.spec.ts` is the extreme case: fully commented out, no test registered at all."
-
-#### Related files
-- `tests/07_WebTables/249_FollowingSibling.spec.ts`
-- `tests/07_WebTables/250_FilterMethod.spec.ts`
-- `tests/07_WebTables/251_PrecedingSibling.spec.ts`
-- `tests/07_WebTables/252_WebTablePagination.spec.ts`
-- `tests/07_WebTables/253_WebTablePaginationAsyncFntn.spec.ts`
-- `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts`
-
-### Descriptive Test File Naming and Generated Documentation
+### Intent drift: test titles, commented-out flows, and unused imports
 
 #### What it is (beginner version)
-The old files were all named `248_TestCase.spec.ts`, `249_TestCase.spec.ts`, `250_TestCase.spec.ts` — three files whose names told you nothing. They're now `248_UsingNthof(i).spec.ts`, `249_FollowingSibling.spec.ts`, `250_FilterMethod.spec.ts`, and so on, so the filename alone states the technique under study. `README.md` is not hand-maintained; a script regenerates it.
+Over time, a test's name and its body stop matching. Code is commented out instead of deleted, imports accumulate, and the report (or README index) keeps advertising a capability that is no longer executed.
 
 #### Why do testers care?
-Filenames are the cheapest documentation you will ever write. A numbered prefix preserves ordering for a learning curriculum; the descriptive suffix makes the technique findable by grep. And a *generated* README can't drift from the code — which is exactly the problem the diff demonstrates it solving.
+Test titles are documentation. If a suite says "Add, Search, Delete" but only searches and deletes, then neither the engineer nor a CI dashboard can tell what regression coverage actually exists. Trend lines over time become meaningless.
 
 #### Repository implementation
-`README.md` renames three entries and adds four, each with a target URL and a test-case list. The rename entries keep their existing descriptions while the new entries get full treatment — for example `250` changes from `_No top-level test(...) blocks found in this file._` to a listed test, because the file now contains one. The `OrangeHRM_WebTableFeatures.spec.ts` entry is registered as having no top-level tests, matching the all-commented-out file, and is annotated with a warning that a credential literal is hard-coded in a `fill()` call. That annotation is generated too, and it is doing real work: the file is a draft, but the draft is one commit away from being pushed.
+The OrangeHRM test is named `Verify OrangeHRM Employee Add,Search From List,Delete`, but the entire Add flow is commented out:
 
-The generator is wired up in `package.json` alongside a sibling script for concept analysis:
-
-```json
-"scripts": {
-  "readme:sync": "node scripts/readme-sync.js",
-  "concept:analysis": "node scripts/concept-analysis.js"
-}
+```ts
+// //Add an Employee
+// await page.getByRole('button', {name: 'Add' }).click();
+// await page.locator('input[name="firstName"]').fill('TEKNAS');
+// await page.locator('input[name="lastName"]').fill('INARMU');
+// await page.getByRole('button', {name: 'Save' }).click();
 ```
 
+Similarly, `Locator` is imported in both new specs and never used, and `dotenv` is imported in the OrangeHRM spec while no `dotenv.config()` call appears in that file. On the documentation side, the README index entry moved from `OrangeHRM_WebTableFeatures.spec.ts` to the two new spec names, and the deleted file's placeholder text `_No top-level test(...) blocks found in this file._` was replaced by real test listings.
+
 #### Playwright usage
-No Playwright API is involved. What matters is that the runner discovers specs by the `.spec.ts` suffix and the `testDir` configured in `playwright.config.ts` — renaming a file changes nothing functionally, but it does change what a failure report and a `--grep` filter will show.
+Playwright reports each `test(...)` title verbatim in the report output, so a stale title is visible on the dashboard — which is exactly what the regenerated README index now reflects.
 
 #### Selenium or alternative approach
-Selenium has no file-naming requirement, but the convention advice is the same and transfers directly: name the file after the behaviour under test, and keep the framework's discovery suffix (`.java`, `_test.py`) at the end where the runner expects it.
+The same problem exists with Selenium; the usual fix is stricter project hygiene (unused-import linting, a no-comment rule) rather than a tool feature. A deleted spec also means any external reference to that file name — a CI job path, a test-management entry, a bookmark — now points at nothing.
 
 #### Comparison
-Hand-maintained READMEs rot the moment a file is renamed — which is precisely what the previous three `TestCase` entries would have done, since they all shared an identical basename differing only by number. A generator trades authorship for accuracy: the target URL, test title, and "no top-level test blocks" note are all derived from the file itself, so they cannot be wrong about their own contents. The cost is that you can no longer write prose *into* a file entry without editing the generator, and the generated output is dry by design — a `console.log` in a test body produces no documentation value. The credential warning is the most interesting consequence: an automated pass over source code caught a secret that a human reviewing the README would probably have missed.
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| Title surfaces in reports | Yes, verbatim per test | Yes, via the runner's reporting |
+| Unused import detection | TypeScript / ESLint, not the test runner | Same — build-tool concern |
+| Commented-out code | No enforcement | No enforcement |
+| Deleted spec | Breaks any path-filtered CI invocation | Same |
 
 #### Interview-ready answer
-"The three `*_TestCase.spec.ts` files were renamed to name the technique they teach — `UsingNthof(i)`, `FollowingSibling`, `FilterMethod` — so a numbered learning curriculum keeps its order while the filename stays greppable. `README.md` is generated by a `readme:sync` script rather than hand-written, which is what keeps it from drifting when files are renamed; the diff shows exactly that fix, and it also shows the generator flagging a hard-coded credential in a commented-out draft. The trade-off is that generated docs are accurate but impersonal, and there's no way to add narrative to a single entry without editing the generator."
+"Comments were originally added to clarify intent, but the codebase shows what happens without a cleanup rule: a test named for Add, Search and Delete that only exercises Search and Delete, plus imports for `Locator` and `dotenv` that nothing uses. I would either finish the Add flow or rename the test to match what it verifies, and let a linter fail the build on unused imports — because a report that advertises coverage which isn't executed is worse than no report, since it makes the suite look healthier than it is."
+
+#### Related files
+- `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
+- `README.md`
+- `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts` (deleted)
+
+---
+
+### Credentials through environment variables
+
+#### What it is (beginner version)
+Login data is read from environment variables instead of being typed into the spec, so the secret never lives in version control. The variable name lives in the code; the value lives in the machine's environment.
+
+#### Why do testers care?
+Hard-coded credentials leak. They end up in git history, in pull requests, in CI logs, and in shared repositories. Reading them from the environment also lets CI inject the real secret without editing a file.
+
+#### Repository implementation
+The OrangeHRM spec reads two variables and never contains literal values:
+
+```ts
+await page.locator('input[placeholder="Username"]').fill(process.env.ORANGEHRM_USER!);
+await page.locator('[REDACTED]').fill(process.env.ORANGEHRM_PASS!);
+```
+
+The README tree confirms the repository is structured around a local `.env` alongside a `.env-example` template. The diff also removes `.env.backup-pre-edit` from that documented tree.
+
+#### Playwright usage
+The `!` is a TypeScript non-null assertion, telling the compiler "this is a string, not `string | undefined`". It removes the type error without adding a runtime check — so if the variable is genuinely missing, `fill()` receives `undefined` and fails at the point of use, not at startup. Note that the import of `dotenv` in this file is not accompanied by a visible `dotenv.config()` call, so how these values get populated is **not demonstrated** by this snapshot; it depends on setup elsewhere in the repository or on the shell environment.
+
+#### Selenium or alternative approach
+Selenium code typically does the same thing — read from `System.getenv("ORANGEHRM_USER")` in Java, or `os.environ["ORANGEHRM_USER"]` in Python — then type into `element.sendKeys(...)`. The mechanism is language-level, not driver-level, so there is no Selenium-specific advantage here.
+
+#### Comparison
+| Aspect | Playwright (TypeScript) | Selenium (Java / Python) |
+| --- | --- | --- |
+| Read secret | `process.env.ORANGEHRM_USER` | `System.getenv("ORANGEHRM_USER")` |
+| Type-safety escape hatch | `!` non-null assertion | cast / null check |
+| Missing-value failure | Fails at the `fill()` call | Fails at `sendKeys` or throws NPE |
+| Secret storage | `.env` (gitignored) + `.env-example` | Same pattern, same rule |
+
+#### Interview-ready answer
+"Credentials come from environment variables, never literals, with a committed `.env-example` documenting the names and `.env` holding the real values locally; CI injects them at run time. I avoid the non-null assertion where possible, because it silences the compiler without protecting the run — a missing secret should fail fast with a clear message at setup, not surface later as a confusing fill error on a login page."
+
+#### Related files
+- `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
+- `README.md`
+
+---
+
+### Waiting, pausing, and flakiness control
+
+#### What it is (beginner version)
+Playwright waits for the things it needs automatically: an element must be visible, stable, and enabled before a click lands. Fixed sleeps (`waitForTimeout`) and manual pauses (`page.pause()`) are escape hatches that trade determinism for hope.
+
+#### Why do testers care?
+Flaky tests are worse than no tests — they burn engineering time, erode trust in CI, and get disabled. Every hard-coded wait is a fixed guess about load time that will eventually be wrong.
+
+#### Repository implementation
+Both new specs use fixed waits at exactly the points where an assertion would be better:
+
+```ts
+// Flipkart — after pagination loop finishes
+await page.waitForTimeout(10000);
+
+// OrangeHRM — after navigating into the PIM module
+await page.waitForTimeout(5000);
+// OrangeHRM — after the delete click, before the confirmation dialog
+await page.waitForTimeout(2000);
+// OrangeHRM — interactive inspector stop
+await page.pause();
+```
+
+The OrangeHRM spec mixes a fixed two-second wait *and* a `toBeVisible()` assertion for the same delete confirmation — the assertion is what actually proves the record was deleted; the sleep is redundant.
+
+#### Playwright usage
+`page.waitForTimeout()` is explicitly discouraged because it is never retried and always costs its full duration. `page.pause()` opens the Playwright Inspector mid-run, which is how a developer inspects the live page state; it is also blocking, so a committed `page.pause()` will stall any non-interactive run. Playwright's own retry mechanism (element retry on action, and web-first assertion retry) is the intended replacement for both.
+
+#### Selenium or alternative approach
+Selenium's equivalent of "wait for the thing" is an explicit wait: `new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(locator))`. The unconditional sleep equivalent is `Thread.sleep(2000)` in Java or `time.sleep(2)` in Python. Because Selenium does not auto-wait, the sleeps here are not unusual for that stack — the *idiomatic* Selenium fix is an explicit wait, not a longer sleep.
+
+#### Comparison
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| Wait for element | Automatic before every action | `WebDriverWait` + `ExpectedConditions` |
+| Assertion sync | Built into `expect` | Manual, before the assert |
+| Unconditional sleep | `page.waitForTimeout(ms)` | `Thread.sleep(ms)` / `time.sleep()` |
+| Interactive debug | `page.pause()` (Inspector) | Manual pause / IDE breakpoint |
+| Auto-wait before click | Yes (visible, stable, enabled, receives events) | No |
+
+#### Interview-ready answer
+"The rule I follow is: every wait must have an assertion at the end of it. `waitForTimeout` is unconditional, so it is either too short on a slow day or wasted time on a fast one — it can never be right. Playwright's auto-waiting covers actionability, and its web-first assertions retry, so I remove the sleep and assert the post-condition directly; the one place I'd keep a wait is around genuinely non-deterministic third-party behaviour, and even then I'd bound it with an explicit condition rather than a magic number."
+
+#### Related files
+- `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
+
+---
+
+### Selector durability on third-party sites
+
+#### What it is (beginner version)
+Sites you do not own rename their CSS classes whenever they redesign. Minified or hashed class names like `RG5Slk` or `v1zwn26` have no meaning to a reader and no stability guarantee.
+
+#### Why do testers care?
+A selector tied to a generated class name is a time bomb: the test passes today and fails on the next deployment, with an error message that points at a class name nobody recognises.
+
+#### Repository implementation
+The Flipkart spec leans on exactly those unstable names:
+
+```ts
+await page.locator('.nw1UBF.v1zwn26').first().fill('DSLR Camera');
+const items = page.locator('//div[@class="RG5Slk"]');
+const price = page.locator('//div[@class="hZ3P6w DeU9vF"]');
+```
+
+There is a compound class on the price locator, which makes the `[@class="..."]` XPath there particularly brittle. The consent/overlay dismissal is equally unguarded — a single unconditional click on the page's first role=button, with no assertion about what was actually dismissed.
+
+#### Playwright usage
+Playwright's role, text and placeholder locators resolve through the accessibility tree, which a redesign usually preserves. Where semantics are missing, prefer stable attributes (a `data-testid`) or structural relationships (a cell that *contains* a known name) over generated class names. The `strictness` model also fails loudly when a selector matches multiple elements, which surfaces ambiguity earlier than a silently-wrong `.first()`.
+
+#### Selenium or alternative approach
+Selenium has the same fragility problem with the same selectors, and the same remedy: prefer `By.id`, stable `data-*` attributes, link text, and XPath relative to a stable anchor. The ecosystem difference is not in the driver but in the surrounding tooling — Selenium users often reach for a page-object layer to centralise selectors, so one class-name change is a one-line fix instead of a sweep.
+
+#### Comparison
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| Stable-by-default locators | `getByRole`, `getByText`, `getByPlaceholder` | None built in; page objects fill the gap |
+| Test-id convention | `getByTestId(...)` | `By.cssSelector("[data-testid='...']")` |
+| Multi-match behaviour | Strict mode throws with a candidate list | `findElement` returns the first match silently |
+| Selector refactor cost | Scattered across the spec | Centralised if page objects are used |
+
+#### Interview-ready answer
+"When I automate a site I don't control, I treat class names as disposable. I locate by role, text or placeholder first, and only fall back to a class when nothing semantic exists — and then I add a `data-testid` if I have any influence over the app. Playwright's strictness is a real safety net here: a selector that suddenly matches three elements throws with the candidates listed, whereas `findElement` in Selenium would quietly take the first and produce a confusing downstream failure."
+
+#### Related files
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
+
+---
+
+### Reporter configuration and toggling third-party integrations
+
+#### What it is (beginner version)
+The Playwright config decides how results are reported. Reporters can be listed together, and commenting one out turns it off without deleting the configuration.
+
+#### Why do testers care?
+Reporters are the output layer — the terminal line, the HTML gallery, Allure, custom dashboards. Turning one off changes what evidence a run produces, and reporters can also slow a run down or inject a failure of their own.
+
+#### Repository implementation
+The config change reduces the reporter list to the built-in `line` reporter only:
+
+```ts
+reporter: [
+  ['line'],
+  // ['allure-playwright'],
+  // ['utils/CustomReporter.ts']
+],
+```
+
+The `line` reporter stays active; the Allure reporter and the repository's own `utils/CustomReporter.ts` are both disabled but preserved as comments.
+
+#### Playwright usage
+The array form is a list of reporter configurations. Keeping the entries commented rather than deleted makes the toggle reversible and self-documenting. Notably, the working tree still contains `tta-report/*.html` and `reports/runs/*.json` artifacts alongside a README tree update listing new report files — but with the custom reporter commented out here, **what generated those artifacts in these runs is not demonstrated** by the changed files; they may predate the toggle or come from a separate command.
+
+#### Selenium or alternative approach
+Selenium has no built-in equivalent reporter stack. The grid, the language runner (TestNG, JUnit, pytest), and external tools such as Allure's listener or an extension produce the reports, so configuration is spread across the runner and the CI job rather than one list in one file. The consequence is the same: a commented-out listener changes the available evidence, and the missing artifacts are just as invisible.
+
+#### Comparison
+| Aspect | Playwright | Selenium |
+| --- | --- | --- |
+| Reporter list | One array in `playwright.config.ts` | Runner config + listener registration |
+| Multiple reporters | Native list | Requires adapters/plugins |
+| Disabling one | Comment or remove the entry | Disable the listener/adapter |
+| Built-in terminal output | `line`, `list`, `dot` | Delegated to the runner |
+
+#### Interview-ready answer
+"Reporters are configuration, and in Playwright they're a single list in the config, so switching one off is a one-line change — which is what this change does, keeping `line` for the terminal and commenting out Allure and the custom reporter. I'd prefer deleting unused reporter entries and keeping the history in version control, because commented config tends to survive long after it's relevant, and I always check the reporter isn't the reason an artifact is missing before assuming the test didn't run."
+
+#### Related files
+- `playwright.config.ts`
+- `README.md`
+- `utils/CustomReporter.ts` (referenced by the config, not analyzed)
+
+---
+
+### Spec organization, naming, and the documentation index
+
+#### What it is (beginner version)
+Practice specs live in a single folder, one topic per file, and the README carries an index of every spec with its target site and test titles. Renaming a spec means updating that index.
+
+#### Why do testers care?
+A test suite is only maintainable if a new engineer can find the right file without asking. When the index is generated, it also becomes a quick view of what is actually covered.
+
+#### Repository implementation
+The README index now lists the two new files with their target URLs and test titles, and drops the previous entry:
+
+```markdown
+### `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
+Target: https://www.flipkart.com/
+1 test case(s):
+- **Verify Pagination features on Flipkart page**
+
+### `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
+Target: https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
+1 test case(s):
+- **Verify OrangeHRM Employee Add,Search From List,Delete**
+```
+
+The same README diff adds four new `tta-report/report_*.html` filenames to the directory tree and removes `.env.backup-pre-edit` from it — the tree is refreshed to match the working directory.
+
+#### Playwright usage
+Each file wraps a single `test(...)` call, so one topic — pagination, or employee CRUD — maps to one file and one test title. The titles are the same strings that appear in the Playwright report, which is what makes the generated index useful rather than decorative.
+
+#### Selenium or alternative approach
+Selenium projects follow the same one-class-per-page-object convention but have no single well-known index generator; the equivalent is often a suite XML consumed by a CI dashboard, or a manually maintained test-plan document. That manual step is where the two ecosystems differ most in practice: a generated index can't drift, a hand-written one does.
+
+#### Comparison
+| Aspect | This repository | Typical Selenium project |
+| --- | --- | --- |
+| Spec layout | One file per topic in `tests/PracticePrograms` | One class per page object, one class per test |
+| Index of coverage | Generated into `README.md` | Manual, or a CI dashboard fed by suite XML |
+| Rename impact | File rename + regenerated index | Class rename + suite XML path updates |
+| Spec discovery | Folder convention + README table of contents | Folder convention + suite configuration |
+
+#### Interview-ready answer
+"I keep practice specs at one topic per file so the name, the test title, and the README index entry all say the same thing — here, pagination on Flipkart and employee CRUD on OrangeHRM. The index is regenerated rather than hand-edited, which is what keeps it from drifting when a spec is renamed or deleted. The practical rule is that any change to test scope should show up in three places at once: the file, the test title, and the documented coverage list."
 
 #### Related files
 - `README.md`
-- `package.json`
-- `scripts/readme-sync.js`
-- `tests/07_WebTables/248_UsingNthof(i).spec.ts`
-- `tests/07_WebTables/249_FollowingSibling.spec.ts`
-- `tests/07_WebTables/250_FilterMethod.spec.ts`
-- `tests/07_WebTables/251_PrecedingSibling.spec.ts`
-- `tests/07_WebTables/252_WebTablePagination.spec.ts`
-- `tests/07_WebTables/253_WebTablePaginationAsyncFntn.spec.ts`
-- `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts`
+- `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
+- `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
+- `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts` (deleted)
 
-## Summary of the arc
+---
 
-Read in order, the six web-table specs form a deliberate teaching sequence: iterate a table positionally with `nth()` (`248`) → reach sideways with XPath axes (`249`) → narrow by content with `filter()` (`250`, `251`) → apply that narrowing across page boundaries (`252`, `253`). The trajectory runs from *positional* addressing to *content-based* addressing, which is the direction a real framework should keep moving in. Three things are worth carrying forward as cautions rather than patterns: the unreachable code in `252` after its `break`, the near-total absence of assertions across the set, and the hard-coded credential literal that the generated README flags in the OrangeHRM draft.
+## Cross-cutting observations
+
+- **Demonstrated by the snapshots:** a mixed locator strategy (user-facing, CSS, XPath), row filtering and chaining, collection iteration with `count()`/`nth()`/`innerText()`, a five-page pagination loop, one web-first assertion, environment-variable credentials, four fixed waits plus a `page.pause()`, commented-out flows, a trimmed reporter list, and a refreshed README index.
+- **Not demonstrated, worth verifying in the repository:** how `process.env` is populated in the OrangeHRM spec (the `dotenv` import has no visible `config()` call in this file); what produced the `tta-report` HTML and `reports/runs` JSON artifacts given the custom reporter is now commented out; and whether the flip of the reporter list was deliberate or a debugging leftover.
+- **Highest-value next steps:** add assertions to the Flipkart spec (counts, a known product, non-empty prices) or move it out of the test suite; move the break check before the Next click; replace the fixed waits with the assertions or conditions they are standing in for; remove the committed `page.pause()`; and either complete or rename the Add/Search/Delete test to match its actual coverage.

@@ -225,6 +225,10 @@ LearningPlaywrightFundamentals/
 │   ├── report_20260929_000537.html
 │   ├── report_20260929_000640.html
 │   ├── report_20260929_000730.html
+│   ├── report_20260929_184457.html
+│   ├── report_20260929_231633.html
+│   ├── report_20260929_231816.html
+│   ├── report_20260929_231911.html
 │   ├── screenshots/
 │   ├── traces/
 │   └── videos/
@@ -232,7 +236,6 @@ LearningPlaywrightFundamentals/
 │   └── CustomReporter.ts
 ├── .env
 ├── .env-example
-├── .env.backup-pre-edit
 ├── .gitignore
 ├── auto-push-agent.js
 ├── package-lock.json
@@ -498,11 +501,21 @@ Target: https://katalon-demo-cura.herokuapp.com/
 
 - **Navigate to CURA Health Services and CLick on Make Appointment**
 
-### `tests/PracticePrograms/OrangeHRM_WebTableFeatures.spec.ts`
+### `tests/PracticePrograms/Flipkart_WebTable_Automate.spec.ts`
+
+Target: https://www.flipkart.com/
+
+1 test case(s):
+
+- **Verify Pagination features on Flipkart page**
+
+### `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
 
 Target: https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
 
-_No top-level `test(...)` blocks found in this file._
+1 test case(s):
+
+- **Verify OrangeHRM Employee Add,Search From List,Delete**
 
 ### `tests/example.spec.ts`
 
