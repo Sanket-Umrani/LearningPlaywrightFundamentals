@@ -229,6 +229,7 @@ LearningPlaywrightFundamentals/
 │   ├── report_20260929_231633.html
 │   ├── report_20260929_231816.html
 │   ├── report_20260929_231911.html
+│   ├── report_20260930_130532.html
 │   ├── screenshots/
 │   ├── traces/
 │   └── videos/
@@ -516,6 +517,14 @@ Target: https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
 1 test case(s):
 
 - **Verify OrangeHRM Employee Add,Search From List,Delete**
+
+### `tests/PracticePrograms/TTA_PracticePageAutomation.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/tables/practice#page
+
+1 test case(s):
+
+- **Verify Form Filling in the TTA Practise Page**
 
 ### `tests/example.spec.ts`
 

@@ -24,7 +24,7 @@ export default defineConfig({
   reporter: [
     ['line'],
     // ['allure-playwright'],
-    // ['./utils/CustomReporter.ts']
+    ['./utils/CustomReporter.ts']
   ],
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
