@@ -24,7 +24,7 @@ export default defineConfig({
   reporter: [
     ['line'],
     // ['allure-playwright'],
-    ['./utils/CustomReporter.ts']
+    // ['./utils/CustomReporter.ts']
   ],
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -34,7 +34,8 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    headless: false
+    headless: false,
+    viewport: { width: 1920, height: 1080 },
   },
 
   /* Configure projects for major browsers */

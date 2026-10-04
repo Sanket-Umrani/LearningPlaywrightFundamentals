@@ -162,6 +162,7 @@ LearningPlaywrightFundamentals/
 │   ├── Codegen.md
 │   ├── ConceptAnalysis.md
 │   ├── ConceptAnalysis.md.bak
+│   ├── Run_Concept
 │   ├── Session_State.md
 │   └── Session_Storage.md
 ├── reports/
@@ -177,6 +178,10 @@ LearningPlaywrightFundamentals/
 │   ├── 05_Allure&CustomReports/
 │   ├── 06_Multiple_Element_Filter/
 │   ├── 07_WebTables/
+│   ├── 08_WebSelect_Dropdowns/
+│   ├── 09_Frame_IFrames/
+│   ├── 10_Keyboard_Hover_DragDrop_Calender/
+│   ├── 11_JS_Alerts/
 │   ├── 22_Misc_AI_concepts/
 │   ├── 23_Advance_Playwright_Framework/
 │   ├── example.spec.ts
@@ -230,6 +235,46 @@ LearningPlaywrightFundamentals/
 │   ├── report_20260929_231816.html
 │   ├── report_20260929_231911.html
 │   ├── report_20260930_130532.html
+│   ├── report_20261003_150114.html
+│   ├── report_20261003_150206.html
+│   ├── report_20261003_150251.html
+│   ├── report_20261003_150437.html
+│   ├── report_20261003_150608.html
+│   ├── report_20261003_150734.html
+│   ├── report_20261003_154555.html
+│   ├── report_20261003_154707.html
+│   ├── report_20261003_163709.html
+│   ├── report_20261003_164112.html
+│   ├── report_20261003_164257.html
+│   ├── report_20261003_173201.html
+│   ├── report_20261003_173238.html
+│   ├── report_20261003_173431.html
+│   ├── report_20261003_173704.html
+│   ├── report_20261003_181307.html
+│   ├── report_20261003_184047.html
+│   ├── report_20261003_184316.html
+│   ├── report_20261003_184401.html
+│   ├── report_20261003_184640.html
+│   ├── report_20261003_185245.html
+│   ├── report_20261003_185727.html
+│   ├── report_20261003_195702.html
+│   ├── report_20261003_195755.html
+│   ├── report_20261003_195938.html
+│   ├── report_20261003_200216.html
+│   ├── report_20261003_200619.html
+│   ├── report_20261003_200838.html
+│   ├── report_20261003_201042.html
+│   ├── report_20261003_201118.html
+│   ├── report_20261003_201249.html
+│   ├── report_20261003_201744.html
+│   ├── report_20261003_201842.html
+│   ├── report_20261003_201944.html
+│   ├── report_20261003_202012.html
+│   ├── report_20261003_202045.html
+│   ├── report_20261004_171747.html
+│   ├── report_20261004_173112.html
+│   ├── report_20261004_173128.html
+│   ├── report_20261004_173322.html
 │   ├── screenshots/
 │   ├── traces/
 │   └── videos/
@@ -494,6 +539,105 @@ Target: https://app.thetestingacademy.com/playwright/tables/webtable
 
 - **Verify the TestCase**
 
+### `tests/08_WebSelect_Dropdowns/254_SimpleDropdown.spec.ts`
+
+Target: https://the-internet.herokuapp.com/dropdown
+
+1 test case(s):
+
+- **Simple Dropdown**
+
+### `tests/08_WebSelect_Dropdowns/255_CustomDropdown.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/tables/dropdowns
+
+1 test case(s):
+
+- **Custom Dropdown**
+
+### `tests/08_WebSelect_Dropdowns/256_AdvancedCustomDropdown.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/tables/select-boxes
+
+1 test case(s):
+
+- **Advanced Custom Dropdown**
+
+### `tests/09_Frame_IFrames/257_Iframe_TestCase.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/frames/
+
+1 test case(s):
+
+- **IframeTestCase Verification**
+
+### `tests/09_Frame_IFrames/258_Iframe_TestCase.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/frames/multi-frames
+
+1 test case(s):
+
+- **MultiFrame Verification**
+
+### `tests/09_Frame_IFrames/259_Nested_Iframe.spec.ts`
+
+Target: https://selectorshub.com/iframe-scenario/
+
+1 test case(s):
+
+- **Nested Iframe Verification**
+
+### `tests/10_Keyboard_Hover_DragDrop_Calender/260_KeyboardInputHandling.spec.ts`
+
+Target: https://keycode.info
+
+1 test case(s):
+
+- **Keyboard Input Handling**
+
+### `tests/10_Keyboard_Hover_DragDrop_Calender/261_DragDropHandling1.spec.ts`
+
+Target: https://the-internet.herokuapp.com/drag_and_drop
+
+1 test case(s):
+
+- **Verify Hover for Drag and Drop**
+
+### `tests/10_Keyboard_Hover_DragDrop_Calender/262_DragDropHandling2.spec.ts`
+
+Target: https://the-internet.herokuapp.com/drag_and_drop
+
+1 test case(s):
+
+- **Hover and Click and Verify**
+
+### `tests/10_Keyboard_Hover_DragDrop_Calender/263_AdvanceDragDropHandling.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/widgets/dnd
+
+1 test case(s):
+
+- **Adavance Drag and Drop Handling**
+
+### `tests/10_Keyboard_Hover_DragDrop_Calender/264_ContextMenuDragDrop.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/widgets/context-menu
+
+1 test case(s):
+
+- **Verify Drag and Drop in Kanban Board**
+
+### `tests/11_JS_Alerts/265_JS_AlertHandling.spec.ts`
+
+Target: https://the-internet.herokuapp.com/javascript_alerts
+
+4 test case(s):
+
+- **Javascript Alerts**
+- **JS Alert accept 1**
+- **JS Alert accept 2**
+- **JS Alert accept 3**
+
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
 Target: https://katalon-demo-cura.herokuapp.com/
@@ -509,6 +653,14 @@ Target: https://www.flipkart.com/
 1 test case(s):
 
 - **Verify Pagination features on Flipkart page**
+
+### `tests/PracticePrograms/Hover&Click&Verify.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/widgets/hover-menu
+
+1 test case(s):
+
+- **Hover and Click and Verify**
 
 ### `tests/PracticePrograms/OrangeHRM_WebTableAutomate.spec.ts`
 
