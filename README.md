@@ -170,6 +170,8 @@ LearningPlaywrightFundamentals/
 ├── scripts/
 │   ├── concept-analysis.js
 │   └── readme-sync.js
+├── test-data/
+│   └── uploads/
 ├── tests/
 │   ├── 01_Basics/
 │   ├── 02_TestAnnotations/
@@ -182,10 +184,16 @@ LearningPlaywrightFundamentals/
 │   ├── 09_Frame_IFrames/
 │   ├── 10_Keyboard_Hover_DragDrop_Calender/
 │   ├── 11_JS_Alerts/
+│   ├── 12_Handle_SVG/
+│   ├── 13_Shadow_DOM/
+│   ├── 14_FileUpload/
+│   ├── 15_FileDownload/
 │   ├── 22_Misc_AI_concepts/
 │   ├── 23_Advance_Playwright_Framework/
 │   ├── example.spec.ts
-│   └── PracticePrograms/
+│   ├── once&one comparison.md
+│   ├── PracticePrograms/
+│   └── waitForLoadState_Differences.md
 ├── tta-report/
 │   ├── history.html
 │   ├── index.html
@@ -287,6 +295,7 @@ LearningPlaywrightFundamentals/
 ├── package-lock.json
 ├── package.json
 ├── playwright.config.ts
+├── tsconfig.json
 └── user-session.json
 ```
 
@@ -633,10 +642,106 @@ Target: https://the-internet.herokuapp.com/javascript_alerts
 
 4 test case(s):
 
-- **Javascript Alerts**
-- **JS Alert accept 1**
-- **JS Alert accept 2**
-- **JS Alert accept 3**
+- **JS Alerts Handling**
+- **JS Alert Accept 1**
+- **JS Alert Accept2**
+- **JS Alert Accept 3**
+
+### `tests/12_Handle_SVG/266_SVG_TestCase.spec.ts`
+
+2 test case(s):
+
+- **Handle SVG Elements**
+- **Verify SVG Elements**
+
+### `tests/12_Handle_SVG/267_SVG_AdvanceTestCase.spec.ts`
+
+2 test case(s):
+
+- **Advance SVG Test Cases Handle**
+- **Verify Multiple SVG elements**
+
+### `tests/12_Handle_SVG/268_SVG_MapsTestCase.spec.ts`
+
+2 test case(s):
+
+- **Validate SVGs on Maps**
+- **Locate SVG on the Maps**
+
+### `tests/12_Handle_SVG/269_SVG_OptimizedMapsTestCase.spec.ts`
+
+2 test case(s):
+
+- **SVG handling**
+- **locate SVG root and assert visible**
+
+### `tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts`
+
+2 test case(s):
+
+- **Verify Shadow DOM Elements**
+- **Verify Input Details under Shadow DOM Root**
+
+> **Warning:** line 12 passes a hard-coded literal to `fill()`. The value is masked here (s************************m) and is never written to this file in full. Move it to an environment variable before sharing this repository.
+
+> **Warning:** line 13 passes a hard-coded literal to `fill()`. The value is masked here (***) and is never written to this file in full. Move it to an environment variable before sharing this repository.
+
+> **Warning:** line 22 passes a hard-coded literal to `fill()`. The value is masked here (p*************************m) and is never written to this file in full. Move it to an environment variable before sharing this repository.
+
+> **Warning:** line 23 passes a hard-coded literal to `fill()`. The value is masked here (p********3) and is never written to this file in full. Move it to an environment variable before sharing this repository.
+
+### `tests/14_FileUpload/271_FileUploadTestCases.spec.ts`
+
+2 test case(s):
+
+- **FileUpload handling**
+- **locate FileUpload and upload**
+
+### `tests/14_FileUpload/272_FileUploadTestCase.spec.ts`
+
+2 test case(s):
+
+- **FileUpload handling**
+- **locate FileUpload and upload**
+
+### `tests/14_FileUpload/273_MultipleFileUploadWithBuffer.spec.ts`
+
+Target: https://www.patternfly.org/components/file-upload/multiple-file-upload/
+
+2 test case(s):
+
+- **Verofy Multiple FIle Upload**
+- **Locate FileUpload and Download**
+
+### `tests/14_FileUpload/274_MultipleFileUploadWithoutBuffer.spec.ts`
+
+2 test case(s):
+
+- **FileUpload handling**
+- **upload multiple files from disk**
+
+### `tests/14_FileUpload/275_MixedFIleUploadWithoutBuffer.spec.ts`
+
+2 test case(s):
+
+- **FileUpload handling**
+- **upload a PDF, a JPG and a DOC together**
+
+### `tests/14_FileUpload/276_FIleUploadOtherDirectory.spec.ts`
+
+2 test case(s):
+
+- **FileUpload handling**
+- **upload files from a different directory**
+
+### `tests/15_FileDownload/277_FileDownloadTestCase.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/widgets/upload-download
+
+2 test case(s):
+
+- **File Upload Demo - TestingAcademy**
+- **demo: Download setInputFiles**
 
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
@@ -733,7 +838,7 @@ Runtime:
 Development:
 
 - `@playwright/test` ^1.63.0
-- `@types/node` ^26.5.1
+- `@types/node` ^26.6.4
 - `allure-commandline` ^2.46.1
 
 ## Scripts
