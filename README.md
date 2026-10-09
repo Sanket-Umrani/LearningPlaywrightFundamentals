@@ -296,6 +296,7 @@ LearningPlaywrightFundamentals/
 ├── package.json
 ├── playwright.config.ts
 ├── tsconfig.json
+├── TTALogin-session.json
 └── user-session.json
 ```
 
@@ -775,6 +776,23 @@ Target: https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
 
 - **Verify OrangeHRM Employee Add,Search From List,Delete**
 
+### `tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts`
+
+Target: https://app.thetestingacademy.com/student/my-process
+
+1 test case(s):
+
+- **Verify Profile Photo Upload Feature by loggin into TTA**
+
+### `tests/PracticePrograms/SelectorsHubShadowDOMPractice.spec.ts`
+
+Target: https://selectorshub.com/xpath-practice-page/
+
+2 test case(s):
+
+- **Hnadling Shadow DOM in SelectorsHub**
+- **Verify ShadoDOM Elements**
+
 ### `tests/PracticePrograms/TTA_PracticePageAutomation.spec.ts`
 
 Target: https://app.thetestingacademy.com/playwright/tables/practice#page
@@ -801,7 +819,7 @@ From `playwright.config.ts`:
 | `testDir` | `./tests` |
 | `fullyParallel` | `true` |
 | `retries` | `process.env.CI ? 2 : 0` |
-| `workers` | `process.env.CI ? 1 : undefined` |
+| `workers` | `1 } : {})` |
 | `reporter` | `—` |
 | `trace` | `on-first-retry` |
 | `headless` | `false` |

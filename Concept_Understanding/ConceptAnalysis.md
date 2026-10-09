@@ -2,272 +2,392 @@
 
 > A beginner-friendly analysis of the concepts represented by the current repository changes.
 
-Generated: 2026-10-08.
+Generated: 2026-10-09.
 
 ## Analyzed files
 
-- package-lock.json — M
-- package.json — M
 - playwright.config.ts — M
 - README.md — M
-- tests/11_JS_Alerts/265_JS_AlertHandling.spec.ts — M
-- tests/12_Handle_SVG/266_SVG_TestCase.spec.ts — ??
-- tests/12_Handle_SVG/267_SVG_AdvanceTestCase.spec.ts — ??
-- tests/12_Handle_SVG/268_SVG_MapsTestCase.spec.ts — ??
-- tests/12_Handle_SVG/269_SVG_OptimizedMapsTestCase.spec.ts — ??
-- tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts — ??
-- tests/14_FileUpload/271_FileUploadTestCases.spec.ts — ??
-- tests/14_FileUpload/272_FileUploadTestCase.spec.ts — ??
-- tests/14_FileUpload/273_MultipleFileUploadWithBuffer.spec.ts — ??
-- tests/14_FileUpload/274_MultipleFileUploadWithoutBuffer.spec.ts — ??
-- tests/14_FileUpload/275_MixedFIleUploadWithoutBuffer.spec.ts — ??
-- tests/14_FileUpload/276_FIleUploadOtherDirectory.spec.ts — ??
-- tests/14_FileUpload/testdata.txt — ??
-- tests/15_FileDownload/277_FileDownloadTestCase.spec.ts — ??
-- tests/once&one comparison.md — ??
-- tests/waitForLoadState_Differences.md — ??
-- tsconfig.json — ??
+- tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts — M
+- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts — ??
+- tests/PracticePrograms/SelectorsHubShadowDOMPractice.spec.ts — ??
+- tests/PracticePrograms/TTA_SessionStorage.ts — ??
+- TTALogin-session.json — ??
 
 ## Skipped files
 
 - .commandcode/taste/communication/taste.md — excluded generated, private, or backup path
 - .commandcode/taste/taste/taste.md — excluded generated, private, or backup path
-- test-data/uploads/FILETWO2.jpg — unsupported or binary file type
-- test-data/uploads/sample2.doc — unsupported or binary file type
-- test-data/uploads/sample2.pdf — unsupported or binary file type
-- tests/14_FileUpload/FILEONE1.jpg — unsupported or binary file type
-- tests/14_FileUpload/sample1.doc — unsupported or binary file type
-- tests/14_FileUpload/sample1.pdf — unsupported or binary file type
+- tests/PracticePrograms/Photo2.png — unsupported or binary file type
 
-For each concept, use these sections:
-### Concept name
-#### What it is (beginner version)
-#### Why do testers care?
-#### Repository implementation
-#### Playwright usage
-#### Selenium or alternative approach
-#### Comparison
-#### Interview-ready answer
-#### Related files
+## Source snapshots
 
-Use repository-relative paths in Related files, cite the actual changed files, and keep code examples short and accurate.
+(Playwright configuration and practice-program test files analyzed below.)
 
 ---
 
-### JavaScript Dialog (Alert/Confirm/Prompt) Handling with One-Shot Listeners
+### Authenticated Session Reuse with `storageState`
+
 #### What it is (beginner version)
-Browser dialogs (alert, confirm, prompt) are modal pop-ups that pause page execution. Playwright intercepts them through the `dialog` event on `page`. The `page.once('dialog', ...)` method registers a **one-shot** handler that runs exactly once and then auto-removes itself.
+Instead of logging in through the UI on every test run, you log in once, save the browser session (cookies + localStorage) to a file, and reuse that file so tests skip the login step entirely.
+
 #### Why do testers care?
-If a dialog is not accepted or dismissed, the browser blocks — the test hangs forever. A one-shot handler guarantees assertions about that single dialog are scoped correctly and prevents the handler from leaking into later dialog events in the same test.
+Login is slow, flaky, and often the source of test instability. Reusing a saved session cuts test time dramatically and removes login as a failure point for tests that need an authenticated user.
+
 #### Repository implementation
-The spec was restructured from `Javascript Alerts` to `JS Alerts Handling`, test names were updated (e.g. `JS Alert accept 1` → `JS Alert Accept 1`), `page.once('dialog', ...)` is used in all three tests, and `console.log` labels were changed to `console.log('Alert Type:', ...)`.
-```typescript
-test('JS Alert Accept 1', async ({ page }) => {
-    await page.getByRole('button', { name: 'Click for JS Alert' }).click();
-    page.once('dialog', async dialog => {
-        expect(dialog.message()).toBe('I am a JS Alert');
-        await dialog.accept();
-    });
-    await page.pause();
-});
+A standalone script, `TTA_SessionStorage.ts`, launches a visible Chromium browser, fills the login form, waits for navigation, and calls `context.storageState({ path: "./TTALogin-session.json" })` to persist the session. The test `ProfilePhotoUploadInTTA.spec.ts` then imports that state via the `test.use({ storageState: './TTALogin-session.json' })` option and opens the page as an already-logged-in user.
+
+#### Playwright usage
+```ts
+// One-time script
+await context.storageState({ path: "session.json" });
+
+// In test config or per-test
+test.use({ storageState: 'session.json' });
+await page.goto('https://app.thetestingacademy.com/student/my-process');
 ```
-#### Playwright usage
-`page.once('dialog', handler)` for single dialogs; `page.on('dialog', handler)` + `page.off(...)` for multiple; `dialog.accept()` / `dialog.dismiss()` / `dialog.accept('text')`.
+
 #### Selenium or alternative approach
-Selenium uses `driver.switchTo().alert()` to get an `Alert` object, then `alert.accept()`, `alert.dismiss()`, or `alert.sendKeys(text)`. There is no event-listener concept — the driver must switch to the alert before interacting.
+Selenium has no built-in session-file concept. You would capture cookies after login with `driver.get_cookies()`, write them to a JSON file, and manually re-inject them with `driver.add_cookie()` before each test — a more fragile hand-rolled equivalent.
+
 #### Comparison
-Playwright's event-driven model auto-handles the dialog without an explicit switch, so it is less error-prone than Selenium's `switchTo().alert()`.
+| | Playwright | Selenium |
+|---|---|---|
+| Session persistence | First-class `storageState` API | Manual cookie serialization |
+| Reuse granularity | Per-test or per-project via `test.use` | Per-test, hand-coded |
+| Data captured | Cookies + `localStorage` + `sessionStorage` | Cookies only (unless expanded manually) |
+
 #### Interview-ready answer
-*"Playwright treats dialogs as events on the Page — you listen for `dialog` via `page.once` or `page.on` and call `dialog.accept()`. For a single expected dialog, `page.once` is best because it auto-removes the handler, preventing leaks into subsequent dialogs. Selenium, by contrast, relies on `driver.switchTo().alert()` and is more prone to `NoAlertPresentException` if the switch happens too early."*
+"I use Playwright's `storageState` to authenticate once via a script, save cookies and local storage to a JSON file, then point `test.use({ storageState })` at that file so every test starts already logged in. This removes the flaky UI login step from the test suite and makes runs faster and more reliable."
+
 #### Related files
-- `tests/11_JS_Alerts/265_JS_AlertHandling.spec.ts`
-- `tests/once&one comparison.md`
+- tests/PracticePrograms/TTA_SessionStorage.ts
+- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts
+- TTALogin-session.json
 
 ---
 
-### SVG Element Interaction and Locator Strategies
+### Conditional Configuration via Object Spread
+
 #### What it is (beginner version)
-SVG (Scalable Vector Graphics) elements use a separate XML namespace (`http://www.w3.org/2000/svg`), so standard HTML locators sometimes need namespace awareness. Playwright locators can target `svg` elements, child `path` elements, and use XPath or CSS to drill into SVG structure.
+A JavaScript pattern for conditionally including an object property using the spread operator (`...`) so you never assign `undefined` to a config key.
+
 #### Why do testers care?
-SVGs are common in icons, charts, and maps. They cannot always be clicked with plain text locators, so testers need reliable strategies to interact with them and assert their state.
+CI environments often need different parallelism, retries, or reporters than local runs. Clean conditionals keep config valid and avoid passing `undefined` values that some tools reject.
+
 #### Repository implementation
-Four SVG specs demonstrate progressively advanced patterns: Flipkart search (clicking an SVG icon and waiting for network idle), chart bar attribute extraction, maps state paths with XPath `[name()='svg']` filtering, and class-suffix matching. The README documents 8 new SVG test cases across these four files.
-```typescript
-const svgElements = page.locator('svg');
-await svgElements.first().click();
-await page.waitForLoadState('networkidle');
+`playwright.config.ts` changed `workers` from a ternary that could yield `undefined`:
+```ts
+workers: process.env.CI ? 1 : undefined,
 ```
-#### Playwright usage
-`page.locator('svg')`, `page.locator('path')`, XPath with `name()='svg'` for namespace-safe selection, `getAttribute('height')`, `getAttribute('class')`, `.all()` to iterate groups.
-#### Selenium or alternative approach
-Selenium uses `driver.findElement(By.cssSelector("svg"))` or `By.xpath("//*[name()='svg']")` with namespace-local-name functions; ` JavascriptExecutor` is sometimes needed to click SVG children that throw `ElementNotInteractableException`.
-#### Comparison
-Playwright's `.all()` and `Locator` chaining make grouping and iterating SVG children cleaner; Playwright's auto-waiting also handles the post-click async load more naturally than Selenium's manual `Thread.sleep`.
-#### Interview-ready answer
-*"SVGs live in their own XML namespace, so I typically use XPath with `[name()='svg']` or just the tag name in a Playwright `Locator`. For maps or charts, I grab all `path` elements with `page.locator('path').all()`, loop through `getAttribute('class')` or `getAttribute('height')`, and click conditionally. The key gotcha is that a plain text-based locator won't find an SVG icon — you need a structural or role-based locator."*
-#### Related files
-- `tests/12_Handle_SVG/266_SVG_TestCase.spec.ts`
-- `tests/12_Handle_SVG/267_SVG_AdvanceTestCase.spec.ts`
-- `tests/12_Handle_SVG/268_SVG_MapsTestCase.spec.ts`
-- `tests/12_Handle_SVG/269_SVG_OptimizedMapsTestCase.spec.ts`
-- `README.md`
-- `tests/waitForLoadState_Differences.md`
-
----
-
-### Shadow DOM Element Access
-#### What it is (beginner version)
-Shadow DOM encapsulates DOM subtrees so inner elements are hidden from the main document's `querySelector`. Playwright pierces Shadow DOM automatically — any locator matching an element inside a shadow root will find it without explicit `shadowRoot` traversal.
-#### Why do testers care?
-Modern component libraries (Lit, Stencil, web components) render inside Shadow DOM, making elements invisible to naive locators. Testers must verify they can interact with inputs, buttons, and text inside shadow roots.
-#### Repository implementation
-The spec targets `https://app.thetestingacademy.com/playwright/widgets/shadow-dom`. Test IDs like `card-account-card`, `counter-cart`, and `nested-host` are used to scope locators. Inputs inside shadow roots are filled via chained `page.getByTestId(...).locator('input[name="email"]').fill(...)`. Two `[REDACTED]` warnings in the README indicate hard-coded literals were masked.
-```typescript
-const card = page.getByTestId('card-account-card');
-await card.locator('input[name="email"]').fill('[REDACTED]');
-await card.getByRole('button', { name: 'Submit' }).click();
+to a conditional spread that omits the key entirely in non-CI:
+```ts
+...(process.env.CI ? { workers: 1 } : {}),
 ```
+
 #### Playwright usage
-Playwright supports Shadow DOM out of the box; no special API is required. Use `testId` or scoped locators to narrow into the shadow host: `page.locator('css=app-card >>> input')`.
-#### Selenium or alternative approach
-Selenium requires `shadow = shadowHost.getShadowRoot()` (Selenium 4+), then `shadow.findElement(By.cssSelector("input"))`. Older Selenium versions need JavaScript injection: `((JavascriptExecutor)driver).executeScript("return arguments[0].shadowRoot", element)`.
-#### Comparison
-Playwright is a superset of Selenium here — the locator finds shadow DOM children with zero extra calls. Selenium 4's `getShadowRoot()` is explicit but verbose; older Selenium is extremely cumbersome via JS.
-#### Interview-ready answer
-*"Playwright pierces Shadow DOM automatically — I can write `page.locator('app-card input[name="email"]')` and it just works. Selenium 4 added `getShadowRoot()` which returns a `SearchContext` you then query, but pre-4 you had to inject `arguments[0].shadowRoot` via JavaScript. The README flags that two `fill()` calls pass hard-coded literals (masked — both email and password), recommending environment variables."*
-#### Related files
-- `tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts`
-- `README.md`
-
----
-
-### File Upload: Path, Buffer, and Multi-File Strategies
-#### What it is (beginner version)
-Playwright uploads files via `setInputFiles()` on a file-input `Locator`. The argument can be a path string, a `{ name, buffer, mimeType }` object, or an array of either. Playwright creates virtual files from buffers, so no physical file needs to exist on disk.
-#### Why do testers care?
-Upload tests cover single files, multiple files, mixed MIME types, and in-memory (buffer) uploads. Testers must handle path resolution, MIME inference, and assertions on accepted file names.
-#### Repository implementation
-Six upload specs span the spectrum: single-file upload via `path.resolve()` and `path.join(__dirname, ...)`, buffer-based upload on PatternFly (creating virtual `.jpg` files from `Buffer.from(...)`), multiple real files from disk, mixed MIME types (`.pdf`, `.jpg`, `.doc`), and uploads from a shared `test-data/uploads/` directory reached via `path.join(__dirname, '..', '..', 'test-data', 'uploads')`. A `testdata.txt` fixture was added. The README documents 12 new upload test cases (2 cases × 6 files).
-```typescript
-const filePath = path.join(__dirname, 'testdata.txt');
-await page.locator("#file-upload").setInputFiles([filePath]);
+```ts
+...(process.env.CI ? { workers: 1 } : {}),
 ```
-#### Playwright usage
-`setInputFiles([string | { name, buffer, mimeType }])`; `path.resolve()` for absolute paths; `path.join(__dirname, ...)` for location-independent relative paths; `Buffer.from('data')` to synthesize files in memory.
+
 #### Selenium or alternative approach
-Selenium uses `fileInput.sendKeys(absolutePath)` for one file at a time; multi-file upload requires `setFileDetector` and a `RemoteDriver` — there is no buffer/in-memory equivalent.
+Selenium Grid doesn't take a single config object; parallelism is set via command-line flags or grid hub size. The conditional-spread idiom is specific to JS/TS config files and doesn't map to Selenium's XML or CLI model.
+
 #### Comparison
-Playwright's `setInputFiles` supports arrays, buffers, and MIME inference natively. Selenium is single-path only and offers no in-memory option.
+| | Object spread | Ternary |
+|---|---|---|
+| Undefined key | Omitted (clean) | Set to `undefined` |
+| Readability | Slightly more verbose | Concise but can be misleading |
+| Safety | No `undefined` in config | `undefined` may cause downstream errors |
+
 #### Interview-ready answer
-*"For uploads I use `setInputFiles()` which accepts a path string, a buffer object, or an array of either. The repo shows three patterns: `path.resolve()` from cwd, `path.join(__dirname, ...)` for spec-relative paths, and buffers via `Buffer.from(...)` for in-memory files. I always assert on the upload area's text (`toContainText('sample1.pdf')`) rather than the input itself — that's the real signal the dropzone accepted the file."*
+"I prefer conditional spread (`...(cond ? { key: value } : {})`) in Playwright config over ternaries that produce `undefined`, because it keeps the config object clean and avoids passing values that downstream consumers might not expect."
+
 #### Related files
-- `tests/14_FileUpload/271_FileUploadTestCases.spec.ts`
-- `tests/14_FileUpload/272_FileUploadTestCase.spec.ts`
-- `tests/14_FileUpload/273_MultipleFileUploadWithBuffer.spec.ts`
-- `tests/14_FileUpload/274_MultipleFileUploadWithoutBuffer.spec.ts`
-- `tests/14_FileUpload/275_MixedFIleUploadWithoutBuffer.spec.ts`
-- `tests/14_FileUpload/276_FIleUploadOtherDirectory.spec.ts`
-- `tests/14_FileUpload/testdata.txt`
-- `README.md`
+- playwright.config.ts
 
 ---
 
-### File Download Event Capture and Persistence
+### Custom Test Reporters
+
 #### What it is (beginner version)
-Playwright captures downloads as `Download` objects via the `download` event. Because the click triggers the download asynchronously, the standard pattern is `Promise.all([page.waitForEvent('download'), page.click(...)])` so the listener is registered before the click fires.
+A reporter is code that collects test results and outputs them in a chosen format — console, HTML, JSON, or a custom structure. Playwright ships reporters and also lets you write your own.
+
 #### Why do testers care?
-Downloads are asynchronous and the `Download` object is only created after the browser initiates the download. Starting the listener *after* the click can miss the event, causing the test to hang forever.
+You might need a custom output format for your CI system, a tailored summary for stakeholders, or integration with a dashboard that Playwright's built-in reporters don't cover.
+
 #### Repository implementation
-The spec uses `Promise.all([page.waitForEvent('download'), page.getByTestId('download-static').click()])`, then `staticDownload.saveAs('./out/' + staticDownload.suggestedFilename())`. Inline ASCII-art comments document the sequence: listen → click → download starts → `Download` object → `saveAs`.
-```typescript
-const [staticDownload] = await Promise.all([
-    page.waitForEvent('download'),
-    page.getByTestId('download-static').click()
-]);
-await staticDownload.saveAs('./out/' + staticDownload.suggestedFilename());
+`playwright.config.ts` un-commented the custom local reporter entry:
+```ts
+reporter: [
+  ['line'],
+  ['./utils/CustomReporter.ts'],
+],
 ```
+The allure reporter remains commented out, showing a conscious choice of the project's own reporter over a third-party one.
+
 #### Playwright usage
-`page.waitForEvent('download')`, `download.suggestedFilename()`, `download.saveAs(path)`, `download.path()` for the temporary on-disk path.
-#### Selenium or alternative approach
-Selenium 4 added `RelativeLocator` and limited download support via `PageFactory`; in practice, testers configure the browser profile (e.g. Firefox `browser.download.dir`, Chrome `--headless` prefs) to auto-save, then assert on the filesystem — there is no `Download` object returned from a click.
-#### Comparison
-Playwright returns a first-class `Download` object with filename, path, and save APIs. Selenium relies on OS/browser profile configuration and filesystem checks, which is more fragile and environment-dependent.
-#### Interview-ready answer
-*"The download pattern is `Promise.all([waitForEvent('download'), click()])` — you must register the listener before the click or you'll miss the event. Playwright gives you a `Download` object with `suggestedFilename()` and `saveAs()`, which is a big upgrade over Selenium's browser-profile-configuration approach where you just hope the file lands in a known folder."*
-#### Related files
-- `tests/15_FileDownload/277_FileDownloadTestCase.spec.ts`
-- `README.md`
-
----
-
-### Playwright Load-State Waiting for Asynchronous Content
-#### What it is (beginner version)
-`page.waitForLoadState()` waits for the page to reach a load state: `domcontentloaded` (DOM parsed), `load` (DOM + resources), or `networkidle` (no network for 500 ms). It controls timing after navigation or dynamic actions.
-#### Why do testers care?
-`page.goto()` waits for `load` by default, but single-page apps often fire XHR/fetch after `load`. Without the right wait, locators fail because data hasn't arrived. `networkidle` ensures the page has settled.
-#### Repository implementation
-`tests/waitForLoadState_Differences.md` defines the three states, the comparison table, and the default (`load`). File `266_SVG_TestCase.spec.ts` calls `page.waitForLoadState('networkidle')` after clicking the Flipkart search SVG because the results load asynchronously. `271_FileUploadTestCases.spec.ts` and `272_FileUploadTestCase.spec.ts` use `waitUntil: 'domcontentloaded'` in `page.goto()`.
-```typescript
-await page.locator('svg').first().click();
-await page.waitForLoadState('networkidle');
+In `playwright.config.ts`:
+```ts
+reporter: [
+  ['line'],
+  ['./utils/CustomReporter.ts'],
+],
 ```
-#### Playwright usage
-`page.waitForLoadState('domcontentloaded' | 'load' | 'networkidle')`, `page.goto(url, { waitUntil: 'domcontentloaded' })`.
+
 #### Selenium or alternative approach
-Selenium uses `WebDriverWait` with `ExpectedConditions.jsReturnsValue` or `document.readyState` checks; there is no built-in load-state enum.
+TestNG uses `IReporter` or listener interfaces; pytest plugins implement reporter hooks. The pattern of registering a custom module in a central config is similar, but Playwright's array-based `reporter` with a path to a file is Playwright-specific.
+
 #### Comparison
-Playwright's named load states and `networkidle` heuristic are more declarative and reliable than Selenium's manual `readyState === 'complete'` polling.
+| | Playwright | TestNG |
+|---|---|---|
+| Custom reporter registration | Path string in `reporter` array | Implement `IReporter`, register in XML |
+| Built-in options | line, list, dot, html, json | stdout, HTML, JUnit |
+| Extension mechanism | Any `.ts` file exporting a class | Java interface implementation |
+
 #### Interview-ready answer
-*"The three load states are `domcontentloaded`, `load` (default for goto), and `networkidle` (no network for 500 ms). I use `networkidle` after actions that fire AJAX/fetch — e.g. clicking a search SVG where Flipkart returns results asynchronously. `domcontentloaded` is the fastest if you only need the static DOM."*
+"Playwright's `reporter` array lets me plug in a custom module — I just pass a path like `['./utils/CustomReporter.ts']` and Playwright loads it. I've used this to produce team-specific summary outputs the default reporters didn't cover."
+
 #### Related files
-- `tests/waitForLoadState_Differences.md`
-- `tests/12_Handle_SVG/266_SVG_TestCase.spec.ts`
-- `tests/14_FileUpload/271_FileUploadTestCases.spec.ts`
-- `tests/14_FileUpload/272_FileUploadTestCase.spec.ts`
+- playwright.config.ts
+- (utils/CustomReporter.ts referenced but not in snapshot set)
 
 ---
 
-### Dependency Version Bump (`@types/node`)
+### Shadow DOM Interaction
+
 #### What it is (beginner version)
-A routine dev-dependency update: `@types/node` was bumped from `^26.5.1` to `^26.6.4` in both `package.json` and `package-lock.json`. TypeScript type definitions for Node.js globals and APIs.
+Shadow DOM is encapsulated HTML that the normal DOM query can't "see into." Elements inside a shadow root need special handling because standard `querySelector` returns empty results.
+
 #### Why do testers care?
-Keeps type definitions for Node built-ins (used by `path`, `fs`, `Buffer.from`, etc.) current with the runtime. Mismatches can cause false type errors.
+Web components use shadow DOM for encapsulation. If your app uses them, your tests need a way to reach inside and interact with those hidden elements.
+
 #### Repository implementation
-Identical one-line change in both `package.json` and `package-lock.json` (`devDependencies` block): `"@types/node": "^26.5.1"` → `"@types/node": "^26.6.4"`. Lockfile updated with new resolved URL, integrity hash, and version metadata. No source code references changed.
+Two files exercise this: a pre-existing test at `tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts` that was trimmed (removing an unused `Locator` import) and a new practice file `SelectorsHubShadowDOMPractice.spec.ts`. The new test grabs a shadow host element `page.locator('#userName')` and then chains locators that Playwright resolves *through* the shadow boundary:
+```ts
+const shadowDOMs = page.locator('#userName');
+await shadowDOMs.getByRole('textbox', { name: 'user name field' }).fill('Ferdinand');
+await shadowDOMs.getByPlaceholder('Enter pizza name').fill('Double Cheeze');
+```
+
 #### Playwright usage
-No direct Playwright usage; `@types/node` supports the Node APIs (`path.join`, `Buffer.from`) exercised in upload tests.
+```ts
+const host = page.locator('#userName');
+await host.getByRole('textbox', { name: 'user name field' }).fill('...');
+```
+
 #### Selenium or alternative approach
-N/A — Node type definitions are a Node.js/TypeScript concern, not Selenium-specific.
+Selenium has no built-in shadow DOM traversal. You must use `execute_script` to call `element.shadowRoot.querySelector(...)` manually — verbose, error-prone, and breaks the fluent locator chain.
+
 #### Comparison
-N/A — this is a dependency maintenance bump, not a test-pattern decision.
+| | Playwright | Selenium |
+|---|---|---|
+| Shadow traversal | Automatic — chained locators work across boundaries | Manual `execute_script` with `shadowRoot` |
+| Readability | Fluent, same as normal locators | Clunky JavaScript snippets inline |
+| Reliability | Handled by the engine | Error-prone, browser-dependent |
+
 #### Interview-ready answer
-*"`@types/node` is the TypeScript type definitions for Node's built-in modules — `path`, `fs`, `Buffer`. Bumping it from 26.5.1 to 26.6.4 aligns the type defs with the installed Node runtime so the `path.join` and `Buffer.from` calls in upload tests type-check cleanly. It's a devDependency, so it doesn't affect test execution, only the editing experience."*
+"Playwright handles shadow DOM automatically — you just chain locators starting from the shadow host, and it resolves elements inside the shadow root without any special API. In Selenium you'd have to drop to `execute_script` and manually call `shadowRoot.querySelector`, which is fragile."
+
 #### Related files
-- `package.json`
-- `package-lock.json`
+- tests/PracticePrograms/SelectorsHubShadowDOMPractice.spec.ts
+- tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts
 
 ---
 
-### Project Tooling: Playwright Config, TypeScript, and Test Inventory
+### File Upload Testing
+
 #### What it is (beginner version)
-The repository added a `tsconfig.json`, documented four new test directories (12–15) plus two markdown spec notes in the README tree, and made whitespace/formatting tweaks to `playwright.config.ts`.
+Uploading a file in a test by pointing an `<input type="file">` at a local file path, instead of using the native file picker dialog.
+
 #### Why do testers care?
-`tsconfig.json` enables strict typing and `NodeNext` module resolution for the TypeScript specs. The README tree helps newcomers navigate the test catalog. Config comments show `baseURL` is deliberately left commented out (credentials live in a gitignored `.env`).
+File pickers can't be driven by automation, so you need a headless-friendly way to set the file on the input element directly.
+
 #### Repository implementation
-- `tsconfig.json`: `strict: true`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`, `module: NodeNext`, `target: ES2022`, `types: ["node", "@playwright/test"]`.
-- `README.md`: directory-tree diff adds `test-data/uploads/` and `tests/12_Handle_SVG/`, `13_Shadow_DOM/`, `14_FileUpload/`, `15_FileDownload/`; adds `tsconfig.json` to the root listing; documents all new SVG (8), Shadow DOM (4), upload (12), and download (2) test cases.
-- `playwright.config.ts`: whitespace-only changes (trailing blank lines added); `dotenv.config()` comment confirms credentials are in a gitignored `.env`.
+In `ProfilePhotoUploadInTTA.spec.ts`, after loading the saved session and navigating to the profile page, the test clicks through a modal, opens Settings, and calls `setInputFiles` with a path read from an environment variable:
+```ts
+await page.locator('#avatar-upload').setInputFiles(upload_dir!);
+```
+
 #### Playwright usage
-`tsconfig.json` is referenced by `playwright.config.ts` and the runner for type-checking specs. `baseURL` is commented out, so tests use absolute URLs. `fullyParallel: true` is set in config.
+```ts
+await page.locator('#avatar-upload').setInputFiles('/path/to/photo.jpg');
+```
+
 #### Selenium or alternative approach
-N/A — project scaffolding concern.
+Selenium uses `element.send_keys('/path/to/file')` on the `<input type="file">` element, which is the closest equivalent — both set the file path programmatically without touching the OS dialog.
+
 #### Comparison
-Strict TypeScript settings (`noUncheckedIndexedAccess`) catch more bugs at compile time than a default `tsc` setup; the markdown notes (`once&one comparison.md`, `waitForLoadState_Differences.md`) serve as in-repo learning docs.
+| | Playwright | Selenium |
+|---|---|---|
+| API | `setInputFiles(path)` on a Locator | `send_keys(path)` on a WebElement |
+| Multi-file | Pass an array of paths | Send multiple paths or use `send_keys` repeatedly |
+| Type safety | TS overloads for strings/buffers | No typing in dynamic languages |
+
 #### Interview-ready answer
-*"The repo now has a strict `tsconfig.json` — `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` — which makes the `page.pause()`-heavy learning specs safer to refactor. The README tree was expanded to cover SVG, Shadow DOM, upload, and download directories, and two markdown notes (`once&one comparison.md`, `waitForLoadState_Differences.md`) document API gotchas. The config tweaks are whitespace-only and confirm `baseURL` is intentionally commented out — credentials live in gitignored `.env`."*
+"I use `setInputFiles` on a file input locator, passing the absolute path of the test artifact. It bypasses the OS file dialog entirely, which is the only reliable way to automate uploads in a headless browser."
+
 #### Related files
-- `tsconfig.json`
-- `playwright.config.ts`
-- `README.md`
-- `tests/once&one comparison.md`
-- `tests/waitForLoadState_Differences.md`
+- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts
+
+---
+
+### Debugging Tests with `page.pause()`
+
+#### What it is (beginner version)
+An intentional breakpoint inside a test that pauses execution and drops you into an interactive inspector UI, so you can inspect the page state and continue step by step.
+
+#### Why do testers care?
+When a selector fails or a step behaves unexpectedly, `page.pause()` lets you freeze the browser at that exact moment and explore — faster than adding `waitForTimeout` and guessing.
+
+#### Repository implementation
+Both new practice-spec files end with `await page.pause();`:
+```ts
+await page.waitForTimeout(5000);
+await page.pause();
+```
+The pattern suggests these are exploratory/learning tests, not production-ready CI tests (a `pause` would hang CI).
+
+#### Playwright usage
+```ts
+await page.pause();
+// or from CLI: npx playwright test --headed --debug
+```
+
+#### Selenium or alternative approach
+Selenium has no equivalent pause-and-inspect. You'd set a code breakpoint in the IDE and attach to the browser, or add manual sleeps and asserts — no built-in interactive inspector.
+
+#### Comparison
+| | Playwright | Selenium |
+|---|---|---|
+| Interactive pause | `page.pause()` — built-in Playwright Inspector | None built-in |
+| CLI equivalent | `--debug` / `--headed` flags | IDE debugger + remote browser attach |
+| CI impact | Hangs if left in test code | Doesn't exist, so N/A |
+
+#### Interview-ready answer
+"I use `page.pause()` during development to drop into the Playwright Inspector when I need to verify a selector or step — it freezes the browser so I can explore the DOM and continue interactively. I always remove it before committing, since it would hang CI."
+
+#### Related files
+- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts
+- tests/PracticePrograms/SelectorsHubShadowDOMPractice.spec.ts
+
+---
+
+### Import Hygiene
+
+#### What it is (beginner version)
+Keeping imports minimal — only importing what the code actually uses — to avoid unused-variable warnings and keep bundle output clean.
+
+#### Why do testers care?
+Unused imports clutter diffs, can cause lint failures in CI, and in type-only contexts can bloat compiled output or cause confusion about what the test depends on.
+
+#### Repository implementation
+`270_ShadowDOM_TestCase.spec.ts` removed `Locator` from its import:
+```ts
+// before
+import{test,expect,Locator}from'@playwright/test';
+// after
+import{test,expect}from'@playwright/test';
+```
+A `Locator` is a type, and since the file never uses it as a type annotation, the import was dead weight.
+
+#### Playwright usage
+```ts
+import { test, expect } from '@playwright/test';
+```
+
+#### Selenium or alternative approach
+In Selenium with Python or Java the concept is the same (unused imports), but statically-typed TypeScript makes it lint-enforceable. Python's `flake8` or Java's IDE warnings catch the same issue, but the fix mechanics differ.
+
+#### Comparison
+| Language | Lint enforcement | Auto-fix |
+|---|---|---|
+| TypeScript (ESLint) | Yes | `eslint --fix` removes unused imports |
+| Python (flake8) | Yes | Manual removal |
+| Java (IDE) | Yes | IDE quick-fix |
+
+#### Interview-ready answer
+"I run ESLint with the `no-unused-vars` rule on CI — it catches imports like a stray `Locator` type that the test doesn't actually use, and auto-fix keeps the codebase clean."
+
+#### Related files
+- tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts
+
+---
+
+### Credentials via `.env`
+
+#### What it is (beginner version)
+Storing secrets (login credentials, file paths) in a `.env` file that is gitignored, then loading them at runtime with `dotenv`.
+
+#### Why do testers care?
+Hardcoding credentials in test files leaks secrets into version control. Environment variables keep them out of git while still available to the test code.
+
+#### Repository implementation
+Both the session-storage script and the upload test use `dotenv`:
+```ts
+import dotenv from "dotenv";
+dotenv.config();
+const upload_dir = process.env.TTA_UploadPhoto;
+```
+The code comment explicitly says credentials live in `.env` which is gitignored. Note: `TTALogin-session.json` — the *output* of the session script — is committed to the repo, not the `.env` source.
+
+#### Playwright usage
+```ts
+import dotenv from "dotenv";
+dotenv.config();
+const email = process.env.TTA_Email!;
+```
+
+#### Selenium or alternative approach
+Selenium users typically pass credentials via system properties or environment variables set in CI configuration. The `.env` + `dotenv` pattern is more common in Node.js ecosystems; Java users lean on `System.getenv()` or CI secret injection.
+
+#### Comparison
+| | Playwright (Node) | Selenium (Java) |
+|---|---|---|
+| Typical secret source | `.env` via `dotenv` | `System.getenv()` or Maven properties |
+| CI integration | Env var injection | CI secret variables |
+| Local dev | `.env` file | `.properties` or IDE run config |
+
+#### Interview-ready answer
+"I keep credentials in a `.env` file loaded with `dotenv`, and I gitignore that file so secrets never reach the repo. Playwright tests read them via `process.env` at runtime."
+
+#### Related files
+- tests/PracticePrograms/TTA_SessionStorage.ts
+- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts
+
+---
+
+### README-Driven Test Inventory
+
+#### What it is (beginner version)
+Maintaining a documented catalog of every test file, its target URL, and its test cases inside the project README — a lightweight living index.
+
+#### Why do testers care?
+Without a catalog, it's hard to know what's covered, what's missing, or which tests to run for a given feature. A README inventory is searchable, reviewable in a PR, and doesn't require running the suite to inspect.
+
+#### Repository implementation
+The README now lists two new practice specs under a `tests/PracticePrograms/` section, each with a target URL and a numbered list of test case descriptions:
+- `ProfilePhotoUploadInTTA.spec.ts` → target `https://app.thetestingacademy.com/student/my-process` → "Verify Profile Photo Upload Feature by loggin into TTA"
+- `SelectorsHubShadowDOMPractice.spec.ts` → target `https://selectorshub.com/xpath-practice-page/` → "Hnadling Shadow DOM in SelectorsHub" and "Verify ShadoDOM Elements"
+
+It also adds `TTALogin-session.json` to the file-tree diagram and notes the `workers` config change.
+
+#### Playwright usage
+Not a Playwright API — it's a documentation convention applied to a Playwright project.
+
+#### Selenium or alternative approach
+The same README-catalog pattern applies to any test framework. Some teams instead use `pytest --collect-only` or TestNG XML descriptions as a generated inventory, but a manually-maintained README is the simplest cross-framework option.
+
+#### Comparison
+| | README catalog | Generated spec list |
+|---|---|---|
+| Maintenance | Manual | Automatic |
+| Human review | Yes (PR diff) | No |
+| Always in sync | Only if maintained | Guaranteed |
+| Best for | Learning / small repos | Large teams / CI gate |
+
+#### Interview-ready answer
+"I keep a README section that lists every spec file, its target URL, and the test cases it covers. It's a quick reference during code review and doubles as living documentation that lives in the PR diff."
+
+#### Related files
+- README.md
