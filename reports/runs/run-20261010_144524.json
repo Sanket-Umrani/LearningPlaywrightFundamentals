@@ -1,0 +1,6 @@
+{
+  "runId": "20261010_144524",
+  "tests": {
+    "chromium › 16_Scroll_To_Element\\279_LazyScroll.spec.ts › Scroll To View-TTA › Scroll To View": "passed"
+  }
+}

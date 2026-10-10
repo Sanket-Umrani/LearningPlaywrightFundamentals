@@ -188,6 +188,9 @@ LearningPlaywrightFundamentals/
 │   ├── 13_Shadow_DOM/
 │   ├── 14_FileUpload/
 │   ├── 15_FileDownload/
+│   ├── 16_Scroll_To_Element/
+│   ├── 17_Expect_Assertions/
+│   ├── 18_Test_Hooks/
 │   ├── 22_Misc_AI_concepts/
 │   ├── 23_Advance_Playwright_Framework/
 │   ├── example.spec.ts
@@ -283,6 +286,24 @@ LearningPlaywrightFundamentals/
 │   ├── report_20261004_173112.html
 │   ├── report_20261004_173128.html
 │   ├── report_20261004_173322.html
+│   ├── report_20261010_112240.html
+│   ├── report_20261010_113853.html
+│   ├── report_20261010_113944.html
+│   ├── report_20261010_114153.html
+│   ├── report_20261010_114930.html
+│   ├── report_20261010_115438.html
+│   ├── report_20261010_115522.html
+│   ├── report_20261010_115540.html
+│   ├── report_20261010_122218.html
+│   ├── report_20261010_122239.html
+│   ├── report_20261010_122344.html
+│   ├── report_20261010_122506.html
+│   ├── report_20261010_143227.html
+│   ├── report_20261010_143818.html
+│   ├── report_20261010_144524.html
+│   ├── report_20261010_145013.html
+│   ├── report_20261010_145348.html
+│   ├── report_20261010_150940.html
 │   ├── screenshots/
 │   ├── traces/
 │   └── videos/
@@ -744,6 +765,122 @@ Target: https://app.thetestingacademy.com/playwright/widgets/upload-download
 - **File Upload Demo - TestingAcademy**
 - **demo: Download setInputFiles**
 
+### `tests/16_Scroll_To_Element/278_Scroll_TestCase.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/widgets/scroll
+
+2 test case(s):
+
+- **Scroll To Element-TTA**
+- **Scroll To View**
+
+### `tests/16_Scroll_To_Element/279_LazyScroll.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/widgets/scroll
+
+2 test case(s):
+
+- **Scroll To View-TTA**
+- **Scroll To View**
+
+### `tests/16_Scroll_To_Element/280_AbortSignal_Scroll.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/widgets/scroll
+
+3 test case(s):
+
+- **Scroll to Element - TestingAcademy**
+- **scroll to view**
+- **Pramod: cancel the wait with an AbortSignal (v1.62+)**
+
+### `tests/17_Expect_Assertions/281_Expect1.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/widgets/scroll
+
+2 test case(s):
+
+- **Scroll to Element - TestingAcademy**
+- **Expect**
+
+### `tests/17_Expect_Assertions/282_Expect2.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter.html
+
+2 test case(s):
+
+- **Scroll to Element - TestingAcademy**
+- **Expect**
+
+### `tests/17_Expect_Assertions/283_Expect3.spec.ts`
+
+Targets:
+- https://app.thetestingacademy.com/playwright/tables/practice.html
+- https://app.thetestingacademy.com/playwright/webtable.html
+
+1 test case(s):
+
+- **3 soft assertions & Negation**
+
+### `tests/17_Expect_Assertions/284_Expect4.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/tables/practice.html
+
+1 test case(s):
+
+- **Visible · enabled · disabled · checked**
+
+### `tests/18_Test_Hooks/285_TestHooks1.spec.ts`
+
+4 test case(s):
+
+- **title test**
+- **email is visible (slow on firefox)**
+- **password is visible — broken in Safari, fix me**
+- **expected to fail until backend ships**
+
+### `tests/18_Test_Hooks/286_TestHooks2.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter.html
+
+1 test case(s):
+
+- **login form is reachable via steps**
+
+### `tests/18_Test_Hooks/287_TestHooks3.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/
+
+2 test case(s):
+
+- **practice index has 47 cards**
+- **sidebar collapse button works**
+
+### `tests/18_Test_Hooks/288_TestSerialParallel.spec.ts`
+
+6 test case(s):
+
+- **open landing**
+- **search product**
+- **add to cart**
+- **go to checkout**
+- **standalone A**
+- **standalone B**
+
+### `tests/18_Test_Hooks/289_TestHooksPriority.spec.ts`
+
+Target: https://app.vwo.com
+
+8 test case(s):
+
+- **TC01 - Login should work**
+- **TC02 - Dashboard should open**
+- **Priority 1 - Login test**
+- **Priority 2 - Dashboard test**
+- **Priority 3 - Logout test**
+- **Login test @p1 @smoke**
+- **Profile test @p2**
+- **Settings test @p3**
+
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
 Target: https://katalon-demo-cura.herokuapp.com/
@@ -800,6 +937,10 @@ Target: https://app.thetestingacademy.com/playwright/tables/practice#page
 1 test case(s):
 
 - **Verify Form Filling in the TTA Practise Page**
+
+### `tests/PracticePrograms/TTA_StudentLoginAssertions.spec.ts`
+
+_No top-level `test(...)` blocks found in this file._
 
 ### `tests/example.spec.ts`
 
