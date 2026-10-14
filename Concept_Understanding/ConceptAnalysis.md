@@ -2,392 +2,202 @@
 
 > A beginner-friendly analysis of the concepts represented by the current repository changes.
 
-Generated: 2026-10-09.
+Generated: 2026-10-14.
 
 ## Analyzed files
 
-- playwright.config.ts — M
+- package-lock.json — M
+- package.json — M
 - README.md — M
-- tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts — M
-- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts — ??
-- tests/PracticePrograms/SelectorsHubShadowDOMPractice.spec.ts — ??
-- tests/PracticePrograms/TTA_SessionStorage.ts — ??
-- TTALogin-session.json — ??
-
-## Skipped files
-
-- .commandcode/taste/communication/taste.md — excluded generated, private, or backup path
-- .commandcode/taste/taste/taste.md — excluded generated, private, or backup path
-- tests/PracticePrograms/Photo2.png — unsupported or binary file type
-
-## Source snapshots
-
-(Playwright configuration and practice-program test files analyzed below.)
-
----
-
-### Authenticated Session Reuse with `storageState`
-
-#### What it is (beginner version)
-Instead of logging in through the UI on every test run, you log in once, save the browser session (cookies + localStorage) to a file, and reuse that file so tests skip the login step entirely.
-
-#### Why do testers care?
-Login is slow, flaky, and often the source of test instability. Reusing a saved session cuts test time dramatically and removes login as a failure point for tests that need an authenticated user.
-
-#### Repository implementation
-A standalone script, `TTA_SessionStorage.ts`, launches a visible Chromium browser, fills the login form, waits for navigation, and calls `context.storageState({ path: "./TTALogin-session.json" })` to persist the session. The test `ProfilePhotoUploadInTTA.spec.ts` then imports that state via the `test.use({ storageState: './TTALogin-session.json' })` option and opens the page as an already-logged-in user.
-
-#### Playwright usage
-```ts
-// One-time script
-await context.storageState({ path: "session.json" });
-
-// In test config or per-test
-test.use({ storageState: 'session.json' });
-await page.goto('https://app.thetestingacademy.com/student/my-process');
-```
-
-#### Selenium or alternative approach
-Selenium has no built-in session-file concept. You would capture cookies after login with `driver.get_cookies()`, write them to a JSON file, and manually re-inject them with `driver.add_cookie()` before each test — a more fragile hand-rolled equivalent.
-
-#### Comparison
-| | Playwright | Selenium |
-|---|---|---|
-| Session persistence | First-class `storageState` API | Manual cookie serialization |
-| Reuse granularity | Per-test or per-project via `test.use` | Per-test, hand-coded |
-| Data captured | Cookies + `localStorage` + `sessionStorage` | Cookies only (unless expanded manually) |
-
-#### Interview-ready answer
-"I use Playwright's `storageState` to authenticate once via a script, save cookies and local storage to a JSON file, then point `test.use({ storageState })` at that file so every test starts already logged in. This removes the flaky UI login step from the test suite and makes runs faster and more reliable."
-
-#### Related files
-- tests/PracticePrograms/TTA_SessionStorage.ts
-- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts
-- TTALogin-session.json
+- tests/19_Data_Driven_Testing/290_DataDrivenTest.spec.ts — ??
+- tests/19_Data_Driven_Testing/291_Users.json — ??
+- tests/19_Data_Driven_Testing/292_TestData.json — ??
+- tests/19_Data_Driven_Testing/293_LoginDDT.spec.ts — ??
+- tests/19_Data_Driven_Testing/294_ReadWriteFS.ts — ??
+- tests/19_Data_Driven_Testing/295_DDT_JSONARRAY.spec.ts — ??
+- tests/19_Data_Driven_Testing/296_DDT_CSV.spec.ts — ??
+- tests/19_Data_Driven_Testing/297_DDT_JSON.spec.ts — ??
+- tests/19_Data_Driven_Testing/298_DDT_EXCEL.spec.ts — ??
+- tests/19_Data_Driven_Testing/299_DDT_YAML.spec.ts — ??
+- tests/19_Data_Driven_Testing/300_DDT_MYSQL.spec.ts — ??
+- tests/19_Data_Driven_Testing/301_DDT_FAKER_JS.spec.ts — ??
+- tests/19_Data_Driven_Testing/test-data/login-data.csv — ??
+- tests/19_Data_Driven_Testing/test-data/login-data.yaml — ??
+- tests/19_Data_Driven_Testing/test-data/login.json — ??
+- tests/19_Data_Driven_Testing/test-data/registration-data.json — ??
+- tests/19_Data_Driven_Testing/test-data/seed.sql — ??
+- tests/19_Data_Driven_Testing/util/csvReader.ts — ??
+- tests/19_Data_Driven_Testing/util/dbReader.ts — ??
+- tests/19_Data_Driven_Testing/util/excelReader.ts — ??
+- tests/19_Data_Driven_Testing/util/generateExcel.js — ??
+- tests/19_Data_Driven_Testing/util/yamlReader.ts — ??
+- tsconfig.json — M
 
 ---
 
-### Conditional Configuration via Object Spread
+### Data-Driven Testing (DDT) with Playwright
 
 #### What it is (beginner version)
-A JavaScript pattern for conditionally including an object property using the spread operator (`...`) so you never assign `undefined` to a config key.
+Data-Driven Testing separates test logic from test data. Instead of hardcoding values in test scripts, you store test inputs and expected outcomes in external files (JSON, CSV, Excel, YAML, databases) or generate them programmatically. The same test code runs multiple times with different data sets.
 
 #### Why do testers care?
-CI environments often need different parallelism, retries, or reporters than local runs. Clean conditionals keep config valid and avoid passing `undefined` values that some tools reject.
+- **Maintainability**: Update test data without touching test code
+- **Coverage**: Run the same scenario with many data combinations (valid, invalid, edge cases)
+- **Reusability**: Share test data across test suites
+- **Collaboration**: Non-technical stakeholders can edit CSV/Excel files
+- **Scalability**: Add new test cases by adding rows, not writing new tests
 
 #### Repository implementation
-`playwright.config.ts` changed `workers` from a ternary that could yield `undefined`:
-```ts
-workers: process.env.CI ? 1 : undefined,
+The repository adds a complete `tests/19_Data_Driven_Testing/` module demonstrating 7 data source patterns:
+
+| File | Data Source | Pattern |
+|------|-------------|---------|
+| `290_DataDrivenTest.spec.ts` | JSON import | Direct ES module import of `.json` |
+| `293_LoginDDT.spec.ts` | JSON file | Import structured object with `validUser`/`invalidUser` |
+| `295_DDT_JSONARRAY.spec.ts` | Inline array | Hardcoded array of test case objects |
+| `296_DDT_CSV.spec.ts` | CSV file | Synchronous `csvReader.ts` utility |
+| `297_DDT_JSON.spec.ts` | JSON array file | Import array of registration objects |
+| `298_DDT_EXCEL.spec.ts` | Excel (.xlsx) | Async `excelReader.ts` using `exceljs` |
+| `299_DDT_YAML.spec.ts` | YAML file | Sync `yamlReader.ts` using `js-yaml` |
+| `300_DDT_MYSQL.spec.ts` | MySQL database | Async `dbReader.ts` using `mysql2/promise` |
+| `301_DDT_FAKER_JS.spec.ts` | Faker.js | Programmatic synthetic data generation |
+
+**Key implementation patterns:**
+
+1. **Synchronous sources (JSON, CSV, YAML)** — Data available at test collection time; each row becomes a separate `test()`:
+```typescript
+// 299_DDT_YAML.spec.ts
+const loginData = readYAML<LoginRow>(YAML_PATH);  // sync
+for (const data of loginData) {
+    test(`Login with : ${data.description}`, async ({ page }) => { ... });
+}
 ```
-to a conditional spread that omits the key entirely in non-CI:
-```ts
-...(process.env.CI ? { workers: 1 } : {}),
+
+2. **Asynchronous sources (Excel, MySQL)** — Data loaded in `beforeAll`, replayed as `test.step()` inside a single test:
+```typescript
+// 298_DDT_EXCEL.spec.ts
+test.beforeAll(async () => {
+    rows = await readLoginDataFromExcel(XLSX_PATH);
+});
+test('login with every row from the spreadsheet', async ({ page }) => {
+    for (const data of rows) {
+        await test.step(`Login with : ${data.description}`, async () => { ... });
+    }
+});
+```
+
+3. **Shared type definition** (`util/yamlReader.ts`):
+```typescript
+export interface LoginRow {
+    description: string;
+    username: string;
+    password: string;
+    shouldPass: boolean;
+    expectedError: string;
+}
+```
+
+4. **CSV reader** (`util/csvReader.ts`) — Simple header-based parsing:
+```typescript
+export function readCSV(filePath: string): TestDataRow[] {
+    const content = fs.readFileSync(fullPath, 'utf-8');
+    const lines = content.trim().split("\n");
+    const headers = lines[0].split(",");
+    // ... map each line to object
+}
+```
+
+5. **Excel reader** (`util/excelReader.ts`) — Uses `exceljs` for `.xlsx`:
+```typescript
+const workbook = new ExcelJS.Workbook();
+await workbook.xlsx.readFile(path.resolve(filePath));
+const sheet = workbook.getWorksheet(sheetName) || workbook.worksheets[0];
+```
+
+6. **MySQL reader** (`util/dbReader.ts`) — Parameterized query with env config:
+```typescript
+export async function readLoginDataFromDB(): Promise<LoginRow[]> {
+    const rows = await query<LoginDataRecord>(
+        'SELECT ... FROM login_data WHERE is_active = ? ORDER BY id', [1]
+    );
+    return rows.map(r => ({ ... }));
+}
+```
+
+7. **Faker.js** (`301_DDT_FAKER_JS.spec.ts`) — Seeded synthetic data:
+```typescript
+faker.seed(123);
+const users = faker.helpers.multiple(() => ({
+    name: faker.person.fullName(),
+    email: faker.internet.email().toLowerCase(),
+    password: faker.internet.password({ length: 12 }),
+}), { count: 5 });
 ```
 
 #### Playwright usage
-```ts
-...(process.env.CI ? { workers: 1 } : {}),
-```
+- **`test.describe`** — Groups related data-driven tests
+- **`test.beforeEach` / `test.afterEach`** — Per-test navigation and logging
+- **`test.beforeAll`** — One-time async data loading (Excel, MySQL)
+- **`test.step()`** — Reports each data iteration separately in HTML report
+- **`page.getByRole()` / `page.getByTestId()` / `page.locator()`** — Resilient selectors with fallbacks via `.or()`
+- **`expect(page).toHaveURL()`** — URL-based outcome verification
 
 #### Selenium or alternative approach
-Selenium Grid doesn't take a single config object; parallelism is set via command-line flags or grid hub size. The conditional-spread idiom is specific to JS/TS config files and doesn't map to Selenium's XML or CLI model.
+| Aspect | Playwright (this repo) | Selenium (traditional) |
+|--------|------------------------|------------------------|
+| Data loading | Sync imports + async hooks | TestNG `@DataProvider`, JUnit `@ParameterizedTest` |
+| Parallel execution | Built-in (each `test()` runs in parallel) | Requires TestNG `parallel="methods"` or JUnit `ExecutionMode.CONCURRENT` |
+| Reporting | Each `test()` / `test.step()` appears separately | Requires Allure/ExtentReports integration |
+| Selectors | `getByRole`, `getByTestId`, auto-waiting | `findElement(By.xpath)`, explicit waits |
+| Excel reading | `exceljs` (async) | Apache POI (sync, verbose) |
+| CSV reading | Custom `csvReader.ts` (50 lines) | OpenCSV / Jackson |
+| YAML reading | `js-yaml` (sync) | SnakeYAML |
+| Database | `mysql2/promise` (async/await) | JDBC (blocking, verbose) |
+| Fake data | `@faker-js/faker` (tree-shakable) | Java Faker / DataFaker |
 
 #### Comparison
-| | Object spread | Ternary |
-|---|---|---|
-| Undefined key | Omitted (clean) | Set to `undefined` |
-| Readability | Slightly more verbose | Concise but can be misleading |
-| Safety | No `undefined` in config | `undefined` may cause downstream errors |
+| Data Source | Sync/Async | Test Collection | Best For |
+|-------------|------------|-----------------|----------|
+| JSON (import) | Sync | ✅ Separate tests | Small, static datasets |
+| JSON (array file) | Sync | ✅ Separate tests | Structured test cases |
+| CSV | Sync | ✅ Separate tests | Spreadsheet export, stakeholder editing |
+| YAML | Sync | ✅ Separate tests | Human-readable, comments, types |
+| Excel | Async | ❌ Single test + steps | Complex formatting, existing .xlsx assets |
+| MySQL | Async | ❌ Single test + steps | Large datasets, shared test DB |
+| Faker.js | Sync (generation) | ✅ Separate tests | Synthetic data, no file maintenance |
+
+**Trade-off**: Sync sources (JSON, CSV, YAML) give better reporting (one test per row, independent retries). Async sources (Excel, MySQL) require `test.step()` workaround but handle larger/complex data.
 
 #### Interview-ready answer
-"I prefer conditional spread (`...(cond ? { key: value } : {})`) in Playwright config over ternaries that produce `undefined`, because it keeps the config object clean and avoids passing values that downstream consumers might not expect."
+> "Data-Driven Testing in Playwright separates test logic from test data. I've implemented it with 7 data sources: JSON (direct import and file), CSV, YAML, Excel, MySQL, and Faker.js. 
+>
+> For synchronous sources like JSON, CSV, and YAML, I read data at module load time so each row becomes its own `test()` — this gives separate reporting, retries, and parallel execution. For asynchronous sources like Excel (`exceljs`) and MySQL (`mysql2/promise`), I load data in `test.beforeAll()` and replay rows as `test.step()` inside one test, since Playwright collects tests synchronously.
+>
+> I use a shared `LoginRow` interface across all readers for consistency. Selectors use `getByRole` with `.or()` fallbacks for resilience. Faker.js with a fixed seed generates reproducible synthetic data for exploratory testing."
 
 #### Related files
-- playwright.config.ts
-
----
-
-### Custom Test Reporters
-
-#### What it is (beginner version)
-A reporter is code that collects test results and outputs them in a chosen format — console, HTML, JSON, or a custom structure. Playwright ships reporters and also lets you write your own.
-
-#### Why do testers care?
-You might need a custom output format for your CI system, a tailored summary for stakeholders, or integration with a dashboard that Playwright's built-in reporters don't cover.
-
-#### Repository implementation
-`playwright.config.ts` un-commented the custom local reporter entry:
-```ts
-reporter: [
-  ['line'],
-  ['./utils/CustomReporter.ts'],
-],
-```
-The allure reporter remains commented out, showing a conscious choice of the project's own reporter over a third-party one.
-
-#### Playwright usage
-In `playwright.config.ts`:
-```ts
-reporter: [
-  ['line'],
-  ['./utils/CustomReporter.ts'],
-],
-```
-
-#### Selenium or alternative approach
-TestNG uses `IReporter` or listener interfaces; pytest plugins implement reporter hooks. The pattern of registering a custom module in a central config is similar, but Playwright's array-based `reporter` with a path to a file is Playwright-specific.
-
-#### Comparison
-| | Playwright | TestNG |
-|---|---|---|
-| Custom reporter registration | Path string in `reporter` array | Implement `IReporter`, register in XML |
-| Built-in options | line, list, dot, html, json | stdout, HTML, JUnit |
-| Extension mechanism | Any `.ts` file exporting a class | Java interface implementation |
-
-#### Interview-ready answer
-"Playwright's `reporter` array lets me plug in a custom module — I just pass a path like `['./utils/CustomReporter.ts']` and Playwright loads it. I've used this to produce team-specific summary outputs the default reporters didn't cover."
-
-#### Related files
-- playwright.config.ts
-- (utils/CustomReporter.ts referenced but not in snapshot set)
-
----
-
-### Shadow DOM Interaction
-
-#### What it is (beginner version)
-Shadow DOM is encapsulated HTML that the normal DOM query can't "see into." Elements inside a shadow root need special handling because standard `querySelector` returns empty results.
-
-#### Why do testers care?
-Web components use shadow DOM for encapsulation. If your app uses them, your tests need a way to reach inside and interact with those hidden elements.
-
-#### Repository implementation
-Two files exercise this: a pre-existing test at `tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts` that was trimmed (removing an unused `Locator` import) and a new practice file `SelectorsHubShadowDOMPractice.spec.ts`. The new test grabs a shadow host element `page.locator('#userName')` and then chains locators that Playwright resolves *through* the shadow boundary:
-```ts
-const shadowDOMs = page.locator('#userName');
-await shadowDOMs.getByRole('textbox', { name: 'user name field' }).fill('Ferdinand');
-await shadowDOMs.getByPlaceholder('Enter pizza name').fill('Double Cheeze');
-```
-
-#### Playwright usage
-```ts
-const host = page.locator('#userName');
-await host.getByRole('textbox', { name: 'user name field' }).fill('...');
-```
-
-#### Selenium or alternative approach
-Selenium has no built-in shadow DOM traversal. You must use `execute_script` to call `element.shadowRoot.querySelector(...)` manually — verbose, error-prone, and breaks the fluent locator chain.
-
-#### Comparison
-| | Playwright | Selenium |
-|---|---|---|
-| Shadow traversal | Automatic — chained locators work across boundaries | Manual `execute_script` with `shadowRoot` |
-| Readability | Fluent, same as normal locators | Clunky JavaScript snippets inline |
-| Reliability | Handled by the engine | Error-prone, browser-dependent |
-
-#### Interview-ready answer
-"Playwright handles shadow DOM automatically — you just chain locators starting from the shadow host, and it resolves elements inside the shadow root without any special API. In Selenium you'd have to drop to `execute_script` and manually call `shadowRoot.querySelector`, which is fragile."
-
-#### Related files
-- tests/PracticePrograms/SelectorsHubShadowDOMPractice.spec.ts
-- tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts
-
----
-
-### File Upload Testing
-
-#### What it is (beginner version)
-Uploading a file in a test by pointing an `<input type="file">` at a local file path, instead of using the native file picker dialog.
-
-#### Why do testers care?
-File pickers can't be driven by automation, so you need a headless-friendly way to set the file on the input element directly.
-
-#### Repository implementation
-In `ProfilePhotoUploadInTTA.spec.ts`, after loading the saved session and navigating to the profile page, the test clicks through a modal, opens Settings, and calls `setInputFiles` with a path read from an environment variable:
-```ts
-await page.locator('#avatar-upload').setInputFiles(upload_dir!);
-```
-
-#### Playwright usage
-```ts
-await page.locator('#avatar-upload').setInputFiles('/path/to/photo.jpg');
-```
-
-#### Selenium or alternative approach
-Selenium uses `element.send_keys('/path/to/file')` on the `<input type="file">` element, which is the closest equivalent — both set the file path programmatically without touching the OS dialog.
-
-#### Comparison
-| | Playwright | Selenium |
-|---|---|---|
-| API | `setInputFiles(path)` on a Locator | `send_keys(path)` on a WebElement |
-| Multi-file | Pass an array of paths | Send multiple paths or use `send_keys` repeatedly |
-| Type safety | TS overloads for strings/buffers | No typing in dynamic languages |
-
-#### Interview-ready answer
-"I use `setInputFiles` on a file input locator, passing the absolute path of the test artifact. It bypasses the OS file dialog entirely, which is the only reliable way to automate uploads in a headless browser."
-
-#### Related files
-- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts
-
----
-
-### Debugging Tests with `page.pause()`
-
-#### What it is (beginner version)
-An intentional breakpoint inside a test that pauses execution and drops you into an interactive inspector UI, so you can inspect the page state and continue step by step.
-
-#### Why do testers care?
-When a selector fails or a step behaves unexpectedly, `page.pause()` lets you freeze the browser at that exact moment and explore — faster than adding `waitForTimeout` and guessing.
-
-#### Repository implementation
-Both new practice-spec files end with `await page.pause();`:
-```ts
-await page.waitForTimeout(5000);
-await page.pause();
-```
-The pattern suggests these are exploratory/learning tests, not production-ready CI tests (a `pause` would hang CI).
-
-#### Playwright usage
-```ts
-await page.pause();
-// or from CLI: npx playwright test --headed --debug
-```
-
-#### Selenium or alternative approach
-Selenium has no equivalent pause-and-inspect. You'd set a code breakpoint in the IDE and attach to the browser, or add manual sleeps and asserts — no built-in interactive inspector.
-
-#### Comparison
-| | Playwright | Selenium |
-|---|---|---|
-| Interactive pause | `page.pause()` — built-in Playwright Inspector | None built-in |
-| CLI equivalent | `--debug` / `--headed` flags | IDE debugger + remote browser attach |
-| CI impact | Hangs if left in test code | Doesn't exist, so N/A |
-
-#### Interview-ready answer
-"I use `page.pause()` during development to drop into the Playwright Inspector when I need to verify a selector or step — it freezes the browser so I can explore the DOM and continue interactively. I always remove it before committing, since it would hang CI."
-
-#### Related files
-- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts
-- tests/PracticePrograms/SelectorsHubShadowDOMPractice.spec.ts
-
----
-
-### Import Hygiene
-
-#### What it is (beginner version)
-Keeping imports minimal — only importing what the code actually uses — to avoid unused-variable warnings and keep bundle output clean.
-
-#### Why do testers care?
-Unused imports clutter diffs, can cause lint failures in CI, and in type-only contexts can bloat compiled output or cause confusion about what the test depends on.
-
-#### Repository implementation
-`270_ShadowDOM_TestCase.spec.ts` removed `Locator` from its import:
-```ts
-// before
-import{test,expect,Locator}from'@playwright/test';
-// after
-import{test,expect}from'@playwright/test';
-```
-A `Locator` is a type, and since the file never uses it as a type annotation, the import was dead weight.
-
-#### Playwright usage
-```ts
-import { test, expect } from '@playwright/test';
-```
-
-#### Selenium or alternative approach
-In Selenium with Python or Java the concept is the same (unused imports), but statically-typed TypeScript makes it lint-enforceable. Python's `flake8` or Java's IDE warnings catch the same issue, but the fix mechanics differ.
-
-#### Comparison
-| Language | Lint enforcement | Auto-fix |
-|---|---|---|
-| TypeScript (ESLint) | Yes | `eslint --fix` removes unused imports |
-| Python (flake8) | Yes | Manual removal |
-| Java (IDE) | Yes | IDE quick-fix |
-
-#### Interview-ready answer
-"I run ESLint with the `no-unused-vars` rule on CI — it catches imports like a stray `Locator` type that the test doesn't actually use, and auto-fix keeps the codebase clean."
-
-#### Related files
-- tests/13_Shadow_DOM/270_ShadowDOM_TestCase.spec.ts
-
----
-
-### Credentials via `.env`
-
-#### What it is (beginner version)
-Storing secrets (login credentials, file paths) in a `.env` file that is gitignored, then loading them at runtime with `dotenv`.
-
-#### Why do testers care?
-Hardcoding credentials in test files leaks secrets into version control. Environment variables keep them out of git while still available to the test code.
-
-#### Repository implementation
-Both the session-storage script and the upload test use `dotenv`:
-```ts
-import dotenv from "dotenv";
-dotenv.config();
-const upload_dir = process.env.TTA_UploadPhoto;
-```
-The code comment explicitly says credentials live in `.env` which is gitignored. Note: `TTALogin-session.json` — the *output* of the session script — is committed to the repo, not the `.env` source.
-
-#### Playwright usage
-```ts
-import dotenv from "dotenv";
-dotenv.config();
-const email = process.env.TTA_Email!;
-```
-
-#### Selenium or alternative approach
-Selenium users typically pass credentials via system properties or environment variables set in CI configuration. The `.env` + `dotenv` pattern is more common in Node.js ecosystems; Java users lean on `System.getenv()` or CI secret injection.
-
-#### Comparison
-| | Playwright (Node) | Selenium (Java) |
-|---|---|---|
-| Typical secret source | `.env` via `dotenv` | `System.getenv()` or Maven properties |
-| CI integration | Env var injection | CI secret variables |
-| Local dev | `.env` file | `.properties` or IDE run config |
-
-#### Interview-ready answer
-"I keep credentials in a `.env` file loaded with `dotenv`, and I gitignore that file so secrets never reach the repo. Playwright tests read them via `process.env` at runtime."
-
-#### Related files
-- tests/PracticePrograms/TTA_SessionStorage.ts
-- tests/PracticePrograms/ProfilePhotoUploadInTTA.spec.ts
-
----
-
-### README-Driven Test Inventory
-
-#### What it is (beginner version)
-Maintaining a documented catalog of every test file, its target URL, and its test cases inside the project README — a lightweight living index.
-
-#### Why do testers care?
-Without a catalog, it's hard to know what's covered, what's missing, or which tests to run for a given feature. A README inventory is searchable, reviewable in a PR, and doesn't require running the suite to inspect.
-
-#### Repository implementation
-The README now lists two new practice specs under a `tests/PracticePrograms/` section, each with a target URL and a numbered list of test case descriptions:
-- `ProfilePhotoUploadInTTA.spec.ts` → target `https://app.thetestingacademy.com/student/my-process` → "Verify Profile Photo Upload Feature by loggin into TTA"
-- `SelectorsHubShadowDOMPractice.spec.ts` → target `https://selectorshub.com/xpath-practice-page/` → "Hnadling Shadow DOM in SelectorsHub" and "Verify ShadoDOM Elements"
-
-It also adds `TTALogin-session.json` to the file-tree diagram and notes the `workers` config change.
-
-#### Playwright usage
-Not a Playwright API — it's a documentation convention applied to a Playwright project.
-
-#### Selenium or alternative approach
-The same README-catalog pattern applies to any test framework. Some teams instead use `pytest --collect-only` or TestNG XML descriptions as a generated inventory, but a manually-maintained README is the simplest cross-framework option.
-
-#### Comparison
-| | README catalog | Generated spec list |
-|---|---|---|
-| Maintenance | Manual | Automatic |
-| Human review | Yes (PR diff) | No |
-| Always in sync | Only if maintained | Guaranteed |
-| Best for | Learning / small repos | Large teams / CI gate |
-
-#### Interview-ready answer
-"I keep a README section that lists every spec file, its target URL, and the test cases it covers. It's a quick reference during code review and doubles as living documentation that lives in the PR diff."
-
-#### Related files
-- README.md
+- `package.json` — Added dependencies: `@faker-js/faker`, `@types/js-yaml`, `exceljs`, `js-yaml`
+- `tsconfig.json` — Added `"allowSyntheticDefaultImports": true` for JSON imports
+- `tests/19_Data_Driven_Testing/290_DataDrivenTest.spec.ts` — Basic JSON import demo
+- `tests/19_Data_Driven_Testing/291_Users.json` — Simple credentials JSON
+- `tests/19_Data_Driven_Testing/292_TestData.json` — Complex nested JSON structure
+- `tests/19_Data_Driven_Testing/293_LoginDDT.spec.ts` — JSON object with valid/invalid users
+- `tests/19_Data_Driven_Testing/294_ReadWriteFS.ts` — Node.js `fs` read/write JSON example
+- `tests/19_Data_Driven_Testing/295_DDT_JSONARRAY.spec.ts` — Inline array of test cases
+- `tests/19_Data_Driven_Testing/296_DDT_CSV.spec.ts` — CSV-driven tests with custom reader
+- `tests/19_Data_Driven_Testing/297_DDT_JSON.spec.ts` — JSON array file import
+- `tests/19_Data_Driven_Testing/298_DDT_EXCEL.spec.ts` — Excel-driven tests (async, steps)
+- `tests/19_Data_Driven_Testing/299_DDT_YAML.spec.ts` — YAML-driven tests (sync, separate tests)
+- `tests/19_Data_Driven_Testing/300_DDT_MYSQL.spec.ts` — MySQL-driven tests (async, steps)
+- `tests/19_Data_Driven_Testing/301_DDT_FAKER_JS.spec.ts` — Faker.js synthetic data
+- `tests/19_Data_Driven_Testing/test-data/login-data.csv` — 7-row CSV dataset
+- `tests/19_Data_Driven_Testing/test-data/login-data.yaml` — 7-row YAML dataset (with comments)
+- `tests/19_Data_Driven_Testing/test-data/login.json` — Valid/invalid user object
+- `tests/19_Data_Driven_Testing/test-data/registration-data.json` — 5 registration test cases
+- `tests/19_Data_Driven_Testing/test-data/seed.sql` — MySQL schema + 8-row seed (1 inactive)
+- `tests/19_Data_Driven_Testing/util/csvReader.ts` — Synchronous CSV parser
+- `tests/19_Data_Driven_Testing/util/dbReader.ts` — MySQL reader with env config
+- `tests/19_Data_Driven_Testing/util/excelReader.ts` — ExcelJS async reader
+- `tests/19_Data_Driven_Testing/util/generateExcel.js` — Spreadsheet generator script
+- `tests/19_Data_Driven_Testing/util/yamlReader.ts` — Sync YAML reader + `LoginRow` type
+- `README.md` — Updated with module 19 documentation and new dependencies

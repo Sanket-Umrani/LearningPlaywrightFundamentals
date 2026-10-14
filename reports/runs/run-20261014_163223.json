@@ -1,0 +1,10 @@
+{
+  "runId": "20261014_163223",
+  "tests": {
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Juwan Gleason": "failed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Elwin Langosh": "failed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Keon Shields": "failed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Dedrick Mosciski": "failed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Justin Hoppe": "failed"
+  }
+}

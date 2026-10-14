@@ -1,0 +1,7 @@
+{
+  "runId": "20261014_125516",
+  "tests": {
+    "chromium › 19_Data_Driven_Testing\\293_LoginDDT.spec.ts › Login-Data Driven › login with invalid user": "passed",
+    "chromium › 19_Data_Driven_Testing\\293_LoginDDT.spec.ts › Login-Data Driven › login with valid user": "passed"
+  }
+}

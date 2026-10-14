@@ -1,0 +1,10 @@
+{
+  "runId": "20261014_164340",
+  "tests": {
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Iva Welch": "passed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Daryl Reichel": "passed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Malvina Christiansen": "passed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Leah Torp": "passed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Sandy Block-Keebler": "passed"
+  }
+}

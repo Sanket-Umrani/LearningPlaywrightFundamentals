@@ -1,0 +1,10 @@
+{
+  "runId": "20261014_130826",
+  "tests": {
+    "chromium › 19_Data_Driven_Testing\\295_DDT_JSONARRAY.spec.ts › DDT Simple › Login with : invalid password": "passed",
+    "chromium › 19_Data_Driven_Testing\\295_DDT_JSONARRAY.spec.ts › DDT Simple › Login with : valid credentials": "passed",
+    "chromium › 19_Data_Driven_Testing\\295_DDT_JSONARRAY.spec.ts › DDT Simple › Login with : empty username": "passed",
+    "chromium › 19_Data_Driven_Testing\\295_DDT_JSONARRAY.spec.ts › DDT Simple › Login with : empty password": "passed",
+    "chromium › 19_Data_Driven_Testing\\295_DDT_JSONARRAY.spec.ts › DDT Simple › Login with : both empty": "passed"
+  }
+}

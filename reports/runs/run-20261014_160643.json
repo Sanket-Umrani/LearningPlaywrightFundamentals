@@ -1,0 +1,10 @@
+{
+  "runId": "20261014_160643",
+  "tests": {
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Cyrus Leannon": "failed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Ms. Lisette Wuckert": "failed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Eldridge Conroy": "failed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Mr. Lenny Kessler": "failed",
+    "chromium › 19_Data_Driven_Testing\\301_DDT_FAKER_JS.spec.ts › DDT Faker › Login with : Shanna Kohler": "failed"
+  }
+}

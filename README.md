@@ -191,6 +191,7 @@ LearningPlaywrightFundamentals/
 │   ├── 16_Scroll_To_Element/
 │   ├── 17_Expect_Assertions/
 │   ├── 18_Test_Hooks/
+│   ├── 19_Data_Driven_Testing/
 │   ├── 22_Misc_AI_concepts/
 │   ├── 23_Advance_Playwright_Framework/
 │   ├── example.spec.ts
@@ -304,6 +305,18 @@ LearningPlaywrightFundamentals/
 │   ├── report_20261010_145013.html
 │   ├── report_20261010_145348.html
 │   ├── report_20261010_150940.html
+│   ├── report_20261014_124408.html
+│   ├── report_20261014_125516.html
+│   ├── report_20261014_130514.html
+│   ├── report_20261014_130826.html
+│   ├── report_20261014_160643.html
+│   ├── report_20261014_161833.html
+│   ├── report_20261014_162339.html
+│   ├── report_20261014_162812.html
+│   ├── report_20261014_162846.html
+│   ├── report_20261014_163105.html
+│   ├── report_20261014_163223.html
+│   ├── report_20261014_164340.html
 │   ├── screenshots/
 │   ├── traces/
 │   └── videos/
@@ -881,6 +894,81 @@ Target: https://app.vwo.com
 - **Profile test @p2**
 - **Settings test @p3**
 
+### `tests/19_Data_Driven_Testing/290_DataDrivenTest.spec.ts`
+
+1 test case(s):
+
+- **Verify Data Driven Test**
+
+### `tests/19_Data_Driven_Testing/293_LoginDDT.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+3 test case(s):
+
+- **Login-Data Driven**
+- **login with valid user**
+- **login with invalid user**
+
+### `tests/19_Data_Driven_Testing/295_DDT_JSONARRAY.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+2 test case(s):
+
+- **DDT Simple**
+- **Login with : ${data.description}**
+
+### `tests/19_Data_Driven_Testing/296_DDT_CSV.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+2 test case(s):
+
+- **DDT CSV**
+- **Login with : ${data.description}**
+
+### `tests/19_Data_Driven_Testing/297_DDT_JSON.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+2 test case(s):
+
+- **DDT JSON**
+- **Login with : ${data.description}**
+
+### `tests/19_Data_Driven_Testing/298_DDT_EXCEL.spec.ts`
+
+2 test case(s):
+
+- **DDT Excel**
+- **login with every row from the spreadsheet**
+
+### `tests/19_Data_Driven_Testing/299_DDT_YAML.spec.ts`
+
+2 test case(s):
+
+- **DDT YAML**
+- **Login with : ${data.description}**
+
+### `tests/19_Data_Driven_Testing/300_DDT_MYSQL.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+2 test case(s):
+
+- **DDT MySQL**
+- **login with every active row from the database**
+
+### `tests/19_Data_Driven_Testing/301_DDT_FAKER_JS.spec.ts`
+
+Target: https://app.thetestingacademy.com/playwright/multiple_element_filter
+
+2 test case(s):
+
+- **DDT Faker**
+- **Login with : ${user.name}**
+
 ### `tests/PracticePrograms/CuraHealthCareServices.spec.ts`
 
 Target: https://katalon-demo-cura.herokuapp.com/
@@ -991,8 +1079,12 @@ The automatic mode is designed for future changes: rerun it after modifying sour
 
 Runtime:
 
+- `@faker-js/faker` ^10.6.0
+- `@types/js-yaml` ^4.0.9
 - `allure-playwright` ^3.12.2
 - `dotenv` ^18.0.2
+- `exceljs` ^4.4.0
+- `js-yaml` ^5.4.3
 
 Development:
 
